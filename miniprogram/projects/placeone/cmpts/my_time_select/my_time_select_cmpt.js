@@ -282,12 +282,22 @@ Component({
 
 			let selected = timeNode.start;
 
+
 			// 已选择 
-			let used = timeNode.used;
+      let used = timeNode.used;
+      
+
+      console.log('timeNode:', timeNode);
+
+
 			if (used) {
 				if (this.data.showDetail == 'no') {
-					// 点击已预订方格，弹出申请组队窗口
-					this.onBookedClick(timeNode);
+          // 点击已预订方格，弹出申请组队窗口
+          // 新增判断：当usedText存在且内容为"我已约"时触发组队申请
+          if (timeNode.usedText && timeNode.usedText.trim() === '我已约') {
+          }else{
+            this.onBookedClick(timeNode);
+          }
 					return;
 				} else {
 					this.setData({
