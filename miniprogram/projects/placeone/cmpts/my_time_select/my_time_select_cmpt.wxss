@@ -241,3 +241,19 @@ page {
 	text-align: left;
 	color: #666;
 }
+
+/* 添加已预订方格的点击样式 */
+.booked-cell {
+  position: relative;
+}
+
+.booked-cell::after {
+  content: "点击申请组队";
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+}

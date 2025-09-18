@@ -83,7 +83,17 @@ Component({
 		price: 0,
 
 		detailModalShow: false, //详情窗口
-		apptData: null  //预订
+    apptData: null,   //预订
+    teamForm: {
+      name: '',
+      phone: ''
+    },
+    currentJoinId: '', // 当前预订ID
+    
+    teamModalShow: false, // 申请组队窗口显示状态
+    teamName: '', // 申请组队姓名
+    teamMobile: '', // 申请组队手机号
+    teamMobileError: '' // 申请组队手机号错误提示
 	},
 
 	/**
@@ -106,6 +116,18 @@ Component({
 	 * 组件的方法列表
 	 */
 	methods: {
+    // 点击已预订方格触发
+    onBookedClick: function(timeNode) {
+      // 保存当前预订ID并显示申请组队窗口
+      this.setData({ 
+        currentJoinId: timeNode.forms ? timeNode.forms.joinId : '',
+        teamModalShow: true,
+        teamName: '',
+        teamMobile: '',
+        teamMobileError: ''
+      });
+    },
+    
 		init: function () {
 			let startTime = Number(this.data.startTime);
 			let endTime = Number(this.data.endTime);
@@ -258,9 +280,11 @@ Component({
 			// 已选择 
 			let used = timeNode.used;
 			if (used) {
-				if (this.data.showDetail == 'no')
-					return; // 不能下单
-				else {
+				if (this.data.showDetail == 'no') {
+					// 点击已预订方格，弹出申请组队窗口
+					this.onBookedClick(timeNode);
+					return;
+				} else {
 					this.setData({
 						detailModalShow: true,
 						apptData: timeNode
@@ -417,7 +441,64 @@ Component({
 				this.triggerEvent('checkin', { val, joinId });
 			}
 			pageHelper.showConfirm('确认' + txt + '?', cb);
+		},
 
-		}
+		// 提交组队申请
+		submitTeamApply: function() {
+			const { teamName, teamMobile } = this.data;
+			
+			// 验证姓名
+			if (!teamName.trim()) {
+				wx.showToast({ title: '请输入姓名', icon: 'none' });
+				return;
+			}
+			
+			// 验证手机号
+			if (!teamMobile) {
+				this.setData({ teamMobileError: '请输入手机号码' });
+				return;
+			}
+			
+			if (!/^1[3-9]\d{9}$/.test(teamMobile)) {
+				this.setData({ teamMobileError: '请输入正确的手机号码' });
+				return;
+			}
+			
+			// 触发组队申请事件，传递数据给父组件
+			this.triggerEvent('teamApply', {
+				joinId: this.data.currentJoinId,
+				name: teamName,
+				mobile: teamMobile
+			});
+			
+			this.setData({ teamModalShow: false });
+			wx.showToast({ title: '申请提交成功', icon: 'success' });
+		},
+
+		// 处理申请组队窗口的点击事件
+		bindTeamCmpt: function(e) {
+			if (e.detail.index === 0) {
+				// 取消按钮
+				this.setData({ teamModalShow: false });
+			} else {
+				// 确认按钮
+        this.submitTeamApply();
+			}
+		},
+
+    // 处理手机号输入
+    bindTeamMobileInput: function(e) {
+      this.setData({
+        teamMobile: e.detail.value,
+        teamMobileError: '' // 清空错误提示
+      });
+    },
+
+    // 处理姓名输入
+    bindTeamNameInput: function(e) {
+      this.setData({
+        teamName: e.detail.value
+      });
+    },
 	}
 })
