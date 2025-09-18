@@ -54,10 +54,45 @@ function isMobile(mobile) {
 };
 
 
+/**
+ * 生成唯一的交易号
+ * @returns {String} - 唯一交易号（基于时间戳和随机数）
+ */
+function genTradeNo() {
+  const timestamp = new Date().getTime().toString();
+  const random = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+  return timestamp + random;
+}
+
+/**
+ * 生成指定长度的随机字符串
+ * @param {Number} length - 字符串长度
+ * @returns {String} - 随机字符串
+ */
+function genRandomString(length = 15) {
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+/**
+ * 生成15位核验码
+ * @returns {String} - 15位核验码
+ */
+function genVerifyCode() {
+  return genRandomString(15);
+}
+
 module.exports = {
 	getProjectId,
 	isDefined, //判断变量，参数，对象属性是否定义  
 	sleep,
 	isObjectNull,
   isMobile,
+  genTradeNo, // 生成唯一交易号
+  genRandomString, // 生成随机字符串
+  genVerifyCode, // 生成核验码
 }

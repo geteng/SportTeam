@@ -287,46 +287,20 @@ class EnrollService extends BaseProjectService {
 		}
 	}
 
-	// 修正某订单状态 （仅需支付订单）
+	// 修正某订单状态 （不再需要支付）
 	async fixEnrollJoinPay(tradeNo) {
-
+		// 由于不再需要支付，所有订单都视为已支付
 		if (!tradeNo) {
-			// 无支付号空单 删除
-			await EnrollJoinModel.del({ ENROLL_JOIN_PAY_TRADE_NO: tradeNo });
-
-			// 重新统计
-			this.statEnrollJoin();
-
-			return false;
+			return true;
 		}
 
-		let payService = new PayService();
-		if (!await payService.fixPayResult(tradeNo)) {
-			// 关闭未支付单
-			payService.closePay(tradeNo);
-
-			// 未支付 
-			await EnrollJoinModel.del({ ENROLL_JOIN_PAY_TRADE_NO: tradeNo });
-
-			// 重新统计
-			this.statEnrollJoin();
-
-			return false;
-		}
-
-		// 已支付
-		let pay = await PayModel.getOne({ PAY_TRADE_NO: tradeNo });
-		if (!pay) this.AppError('支付流水异常，请核查');
-
-		// 更新支付信息
+		// 更新支付信息（直接设置为已支付状态）
 		let data = {
 			ENROLL_JOIN_PAY_STATUS: 1,
 			ENROLL_JOIN_PAY_TRADE_NO: tradeNo,
-			ENROLL_JOIN_PAY_FEE: pay.PAY_TOTAL_FEE,
-			ENROLL_JOIN_PAY_TIME: pay.PAY_END_TIME,
+			ENROLL_JOIN_PAY_TIME: this._timestamp,
 		}
 		await EnrollJoinModel.edit({ ENROLL_JOIN_PAY_TRADE_NO: tradeNo }, data);
-
 
 		// 重新统计
 		this.statEnrollJoin();
@@ -381,10 +355,19 @@ class EnrollService extends BaseProjectService {
       ENROLL_JOIN_ENROLL_ID: enrollId,
       ENROLL_JOIN_DAY: day,
       ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC,
-      $or: [
-        { ENROLL_JOIN_START: ['<=', start], ENROLL_JOIN_END: ['>=', start] },
-        { ENROLL_JOIN_START: ['<=', end], ENROLL_JOIN_END: ['>=', end] },
-        { ENROLL_JOIN_START: ['>=', start], ENROLL_JOIN_END: ['<=', end] }
+      or: [
+        {
+          ENROLL_JOIN_START: ['<=', start],
+          ENROLL_JOIN_END: ['>=', start]
+        },
+        {
+          ENROLL_JOIN_START: ['<=', end],
+          ENROLL_JOIN_END: ['>=', end]
+        },
+        {
+          ENROLL_JOIN_START: ['>=', start],
+          ENROLL_JOIN_END: ['<=', end]
+        }
       ]
     };
     const conflictCount = await EnrollJoinModel.count(conflictWhere);
@@ -398,7 +381,7 @@ class EnrollService extends BaseProjectService {
     // 5. 生成唯一交易号
     const tradeNo = util.genTradeNo();
 
-    // 6. 创建预订记录（待支付状态）
+    // 6. 直接创建成功订单（跳过支付流程）
     const enrollJoinId = await EnrollJoinModel.insert({
       ENROLL_JOIN_USER_ID: userId,
       ENROLL_JOIN_ENROLL_ID: enrollId,
@@ -412,38 +395,74 @@ class EnrollService extends BaseProjectService {
       ENROLL_JOIN_START_FULL: startFull,
       ENROLL_JOIN_END_FULL: endFull,
       ENROLL_JOIN_FEE: price * 100, // 转为分
-      ENROLL_JOIN_PAY_FEE: 0,
-      ENROLL_JOIN_PAY_STATUS: 0, // 未支付
+      ENROLL_JOIN_PAY_FEE: price * 100, // 直接设置为已支付金额
+      ENROLL_JOIN_PAY_STATUS: 1, // 设置为已支付状态
       ENROLL_JOIN_PAY_TRADE_NO: tradeNo,
+      ENROLL_JOIN_CODE: util.genVerifyCode(), // 添加15位核验码
+      ENROLL_TEAM_INFO: userId, // 申请人用户ID，多重#号分割
+      ENROLL_TEAM_INFO_OK: userId, // 申请人用户ID，多重#号分割
       ENROLL_JOIN_FORMS: forms || [],
       ENROLL_JOIN_OBJ: joinObj,
-      ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC, // 初始状态为成功（待支付）
+      ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC, // 订单状态为成功
       ENROLL_JOIN_IS_CHECKIN: 0,
       ENROLL_JOIN_ADD_TIME: this._timestamp,
       ENROLL_JOIN_LAST_TIME: this._timestamp,
       ENROLL_JOIN_ADD_IP: this._ip
     });
 
-    // 7. 创建支付订单
-    const payService = new PayService();
-    const payParams = await payService.createPay({
-      tradeNo,
-      body: `预订${enroll.ENROLL_TITLE}(${day} ${start}-${end})`,
-      totalFee: price * 100, // 分
-      attach: JSON.stringify({
-        enrollId,
-        enrollJoinId,
-        type: 'enroll'
-      }),
-      userId
-    });
-
-    // 8. 返回支付参数
+    // 7. 返回订单信息（不再返回支付参数）
     return {
-      payParams,
       enrollJoinId,
-      tradeNo
+      tradeNo,
+      message: '订单创建成功'
     };
+
+    // // 6. 创建预订记录（待支付状态）
+    // const enrollJoinId = await EnrollJoinModel.insert({
+    //   ENROLL_JOIN_USER_ID: userId,
+    //   ENROLL_JOIN_ENROLL_ID: enrollId,
+    //   ENROLL_JOIN_ENROLL_TITLE: enroll.ENROLL_TITLE,
+    //   ENROLL_JOIN_CATE_ID: enroll.ENROLL_CATE_ID,
+    //   ENROLL_JOIN_CATE_NAME: enroll.ENROLL_CATE_NAME,
+    //   ENROLL_JOIN_DAY: day,
+    //   ENROLL_JOIN_START: start,
+    //   ENROLL_JOIN_END: end,
+    //   ENROLL_JOIN_END_POINT: endPoint,
+    //   ENROLL_JOIN_START_FULL: startFull,
+    //   ENROLL_JOIN_END_FULL: endFull,
+    //   ENROLL_JOIN_FEE: price * 100, // 转为分
+    //   ENROLL_JOIN_PAY_FEE: 0,
+    //   ENROLL_JOIN_PAY_STATUS: 0, // 未支付
+    //   ENROLL_JOIN_PAY_TRADE_NO: tradeNo,
+    //   ENROLL_JOIN_FORMS: forms || [],
+    //   ENROLL_JOIN_OBJ: joinObj,
+    //   ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC, // 初始状态为成功（待支付）
+    //   ENROLL_JOIN_IS_CHECKIN: 0,
+    //   ENROLL_JOIN_ADD_TIME: this._timestamp,
+    //   ENROLL_JOIN_LAST_TIME: this._timestamp,
+    //   ENROLL_JOIN_ADD_IP: this._ip
+    // });
+
+    // // 7. 创建支付订单
+    // const payService = new PayService();
+    // const payParams = await payService.createPay({
+    //   tradeNo,
+    //   body: `预订${enroll.ENROLL_TITLE}(${day} ${start}-${end})`,
+    //   totalFee: price * 100, // 分
+    //   attach: JSON.stringify({
+    //     enrollId,
+    //     enrollJoinId,
+    //     type: 'enroll'
+    //   }),
+    //   userId
+    // });
+
+    // // 8. 返回支付参数
+    // return {
+    //   payParams,
+    //   enrollJoinId,
+    //   tradeNo
+    // };
   }
 
 
@@ -588,33 +607,13 @@ class EnrollService extends BaseProjectService {
 			if (now > day) this.AppError('仅开始前' + step + '天可取消');
 		}
 
-		if (enrollJoin.ENROLL_JOIN_PAY_STATUS == 99) {
-			// 无须支付
-			// 更新记录 
-			let data = {
-				ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.CANCEL,
-				ENROLL_JOIN_CANCEL_TIME: this._timestamp,
-				ENROLL_JOIN_IS_CHECKIN: 0
-			}
-			await EnrollJoinModel.edit(enrollJoinId, data);
+		// 不再区分支付状态，直接取消预订
+		let data = {
+			ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.CANCEL,
+			ENROLL_JOIN_CANCEL_TIME: this._timestamp,
+			ENROLL_JOIN_IS_CHECKIN: 0
 		}
-		else {
-			let tradeNo = enrollJoin.ENROLL_JOIN_PAY_TRADE_NO;
-			if (!await this.fixEnrollJoinPay(tradeNo, enrollJoin.ENROLL_JOIN_ENROLL_ID)) {
-				this.AppError('该报名记录未支付，已取消并删除！');
-			}
-			let payService = new PayService();
-			await payService.refundPay(tradeNo, '用户取消报名');
-
-			// 更新记录 
-			let data = {
-				ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.CANCEL,
-				ENROLL_JOIN_CANCEL_TIME: this._timestamp,
-				ENROLL_JOIN_PAY_STATUS: 8,
-				ENROLL_JOIN_IS_CHECKIN: 0
-			}
-			await EnrollJoinModel.edit(enrollJoinId, data);
-		}
+		await EnrollJoinModel.edit(enrollJoinId, data);
 
 		this.statEnrollJoin();
 

@@ -152,7 +152,13 @@ Page({
 
 				if (!res.data.payRet) {
                     wx.showModal({
-                        title: '温馨提示',
+                      _title: '温馨提示',
+                      get title() {
+                        return this._title;
+                      },
+                      set title(value) {
+                        this._title = value;
+                      },
                         showCancel: false,
                         content: '预订成功！',
                         async success(res) {
