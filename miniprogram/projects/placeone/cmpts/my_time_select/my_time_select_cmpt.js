@@ -118,9 +118,14 @@ Component({
 	methods: {
     // 点击已预订方格触发
     onBookedClick: function(timeNode) {
+      //这里打印timeNode内容
+      // let timeNode = this.data.columns[columnIdx].times[idx];
+      console.log('timeNode内容:', timeNode); // 添加这行打印内容
+      console.log('timeNode内容2:', timeNode.used); // 添加这行打印内容
+
       // 保存当前预订ID并显示申请组队窗口
       this.setData({ 
-        currentJoinId: timeNode.forms ? timeNode.forms.joinId : '',
+        currentJoinId: timeNode.used ? timeNode.used : '',
         teamModalShow: true,
         teamName: '',
         teamMobile: '',
@@ -469,7 +474,12 @@ Component({
 				joinId: this.data.currentJoinId,
 				name: teamName,
 				mobile: teamMobile
-			});
+      });
+      
+      console.log('currentJoinId:', this.data.currentJoinId);
+      console.log('teamName:', teamName);
+      console.log('teamMobile:', teamMobile);
+      console.log('当前用户ID:', this.data.nowUserId)
 			
 			this.setData({ teamModalShow: false });
 			wx.showToast({ title: '申请提交成功', icon: 'success' });
