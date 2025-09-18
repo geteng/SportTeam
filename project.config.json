@@ -48,7 +48,7 @@
   },
   "appid": "wxb849236d44f842c8",
   "projectname": "Multi多功能平台",
-  "libVersion": "2.30.2",
+  "libVersion": "3.10.0",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",

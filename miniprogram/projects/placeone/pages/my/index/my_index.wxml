@@ -78,6 +78,12 @@
 				<text>修改我的个人资料</text>
 			</view>
 		</view>
+    <view wx:if="{{user&&user.USER_STATUS!=9}}" class="item" bindtap="url" data-url="../team/my_team">
+			<view class="title">
+				<image src="../../../images/set/service.png" />
+				<text>我的组队</text>
+			</view>
+		</view>
 
 		<view class="item" bindtap="url" data-url="../fav/my_fav">
 			<view class="title">

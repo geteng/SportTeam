@@ -3,8 +3,8 @@
 	CLOUD_ID: 'cloud1-9g8s4yy431b97143', //云服务id ,本地测试环境 
 
 	// #### 版本信息 
-	VER: 'build 2023.10.01',
-	COMPANY: '联系作者',
+	VER: 'build 2025.9.09',
+	COMPANY: '联系作者gttt999',
 
 	// #### 系统参数 
 	IS_SUB: false, //分包模式 

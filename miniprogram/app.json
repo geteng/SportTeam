@@ -9,6 +9,7 @@
 		"projects/placeone/pages/my/edit/my_edit",
 		"projects/placeone/pages/my/foot/my_foot",
 		"projects/placeone/pages/my/fav/my_fav",
+		"projects/placeone/pages/my/team/my_team",
 		"projects/placeone/pages/news/index/news_index",
 		"projects/placeone/pages/news/detail/news_detail",
 		"projects/placeone/pages/news/cate1/news_cate1",
@@ -70,7 +71,7 @@
 				"text": "场地",
 				"iconPath": "/projects/placeone/images/tabbar/home.png",
 				"selectedIconPath": "/projects/placeone/images/tabbar/home_cur.png"
-      },
+			},
 			{
 				"pagePath": "projects/placeone/pages/my/index/my_index",
 				"text": "个人中心",
@@ -91,5 +92,3 @@
 	},
 	"sitemapLocation": "sitemap.json"
 }
-
-

@@ -334,19 +334,117 @@ class EnrollService extends BaseProjectService {
 	}
 
 	// 支付预订 
-	async prepay(userId, {
-		enrollId,
-		price,
-		start,
-		end,
-		endPoint,
-		day,
-		forms
-	}) {
+	// async prepay(userId, {
+	// 	enrollId,
+	// 	price,
+	// 	start,
+	// 	end,
+	// 	endPoint,
+	// 	day,
+	// 	forms
+	// }) {
+	// 	this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
+  // }
+  // 支付预订 
+  async prepay(userId, {
+    enrollId,
+    price,
+    start,
+    end,
+    endPoint,
+    day,
+    forms
+  }) {
+    // 1. 验证场地是否存在且可用
+    const enroll = await EnrollModel.getOne({
+      _id: enrollId,
+      ENROLL_STATUS: EnrollModel.STATUS.COMM
+    }, 'ENROLL_TITLE, ENROLL_CATE_ID, ENROLL_CATE_NAME, ENROLL_OBJ');
+    if (!enroll) {
+      this.AppError('该场地不存在或已下架');
+    }
 
-		this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
+    // 2. 验证时间有效性
+    const now = timeUtil.time('Y-M-D');
+    if (day < now) {
+      this.AppError('不能预订过去的日期');
+    }
 
-	}
+    const startFull = `${day} ${start}`;
+    const endFull = `${day} ${endPoint}`;
+    if (startFull >= endFull) {
+      this.AppError('开始时间不能晚于结束时间');
+    }
+
+    // 3. 检查时间冲突（同一时段是否已有预订）
+    const conflictWhere = {
+      ENROLL_JOIN_ENROLL_ID: enrollId,
+      ENROLL_JOIN_DAY: day,
+      ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC,
+      $or: [
+        { ENROLL_JOIN_START: ['<=', start], ENROLL_JOIN_END: ['>=', start] },
+        { ENROLL_JOIN_START: ['<=', end], ENROLL_JOIN_END: ['>=', end] },
+        { ENROLL_JOIN_START: ['>=', start], ENROLL_JOIN_END: ['<=', end] }
+      ]
+    };
+    const conflictCount = await EnrollJoinModel.count(conflictWhere);
+    if (conflictCount > 0) {
+      this.AppError('该时间段已被预订，请选择其他时间');
+    }
+
+    // 4. 处理表单数据
+    const joinObj = dataUtil.dbForms2Obj(forms || []);
+
+    // 5. 生成唯一交易号
+    const tradeNo = util.genTradeNo();
+
+    // 6. 创建预订记录（待支付状态）
+    const enrollJoinId = await EnrollJoinModel.insert({
+      ENROLL_JOIN_USER_ID: userId,
+      ENROLL_JOIN_ENROLL_ID: enrollId,
+      ENROLL_JOIN_ENROLL_TITLE: enroll.ENROLL_TITLE,
+      ENROLL_JOIN_CATE_ID: enroll.ENROLL_CATE_ID,
+      ENROLL_JOIN_CATE_NAME: enroll.ENROLL_CATE_NAME,
+      ENROLL_JOIN_DAY: day,
+      ENROLL_JOIN_START: start,
+      ENROLL_JOIN_END: end,
+      ENROLL_JOIN_END_POINT: endPoint,
+      ENROLL_JOIN_START_FULL: startFull,
+      ENROLL_JOIN_END_FULL: endFull,
+      ENROLL_JOIN_FEE: price * 100, // 转为分
+      ENROLL_JOIN_PAY_FEE: 0,
+      ENROLL_JOIN_PAY_STATUS: 0, // 未支付
+      ENROLL_JOIN_PAY_TRADE_NO: tradeNo,
+      ENROLL_JOIN_FORMS: forms || [],
+      ENROLL_JOIN_OBJ: joinObj,
+      ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC, // 初始状态为成功（待支付）
+      ENROLL_JOIN_IS_CHECKIN: 0,
+      ENROLL_JOIN_ADD_TIME: this._timestamp,
+      ENROLL_JOIN_LAST_TIME: this._timestamp,
+      ENROLL_JOIN_ADD_IP: this._ip
+    });
+
+    // 7. 创建支付订单
+    const payService = new PayService();
+    const payParams = await payService.createPay({
+      tradeNo,
+      body: `预订${enroll.ENROLL_TITLE}(${day} ${start}-${end})`,
+      totalFee: price * 100, // 分
+      attach: JSON.stringify({
+        enrollId,
+        enrollJoinId,
+        type: 'enroll'
+      }),
+      userId
+    });
+
+    // 8. 返回支付参数
+    return {
+      payParams,
+      enrollJoinId,
+      tradeNo
+    };
+  }
 
 
 	// 修改登记 
