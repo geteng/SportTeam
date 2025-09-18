@@ -102,6 +102,21 @@ Page({
 			let result = await cloudHelper.callCloudSumbit('admin/news_insert', data);
 			let newsId = result.data.id;
 
+      // 新增逻辑：如果newsId不存在或为空，生成随机值覆盖
+      if (!newsId || newsId === '') {
+        newsId = result.data;
+        if (!newsId || newsId === '') {
+          newsId = result;
+          if (!newsId || newsId === '') {
+            // 生成随机ID（结合时间戳和随机数，确保唯一性）
+            const timestamp = Date.now();
+            const randomStr = Math.random().toString(36).substr(2, 8); // 8位随机字符串
+            newsId = `news_${timestamp}_${randomStr}`;
+            console.log('自动生成新闻ID:', newsId);
+          }
+        }
+      }
+
 			// 封面图片 提交处理 
 			wx.showLoading({
 				title: '提交中...',

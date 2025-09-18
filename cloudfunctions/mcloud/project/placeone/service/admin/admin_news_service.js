@@ -61,11 +61,15 @@ class AdminNewsService extends BaseProjectAdminService {
     // 3. 执行插入操作
     const result = await NewsModel.insert(data);
 
+    console.log('自动生成新闻ID1:', result);
+    console.log('自动生成新闻ID:', result._id);
+    // 
     // 4. 如果是置顶排序（order=0），同步更新首页推荐状态
     if (order === 0) {
       const homeService = new AdminHomeService();
       await homeService.updateHomeVouch({
-        id: result._id,
+        // id: result._id,
+        id: result,
         type: 'news',
         title: title,
         pic: data.NEWS_PIC[0] || '',

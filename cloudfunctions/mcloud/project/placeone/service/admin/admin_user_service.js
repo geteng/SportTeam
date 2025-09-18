@@ -116,8 +116,8 @@ class AdminUserService extends BaseProjectAdminService {
     await UserModel.edit(where, data);
 
     // 6. 记录操作日志
-    const statusDesc = UserModel.STATUS_DESC[Object.keys(UserModel.STATUS).find(key => UserModel.STATUS[key] === status)];
-    this.logUser(`将用户「${user.USER_NAME || user.USER_MOBILE}」状态修改为「${statusDesc}」`);
+    // const statusDesc = UserModel.STATUS_DESC[Object.keys(UserModel.STATUS).find(key => UserModel.STATUS[key] === status)];
+    // this.logUser(`将用户「${user.USER_NAME || user.USER_MOBILE}」状态修改为「${statusDesc}」`);
 	}
 
 	/**删除用户 */
@@ -138,8 +138,8 @@ class AdminUserService extends BaseProjectAdminService {
     await UserModel.del(where);
 
     // 4. 记录操作日志
-    const userName = user.USER_NAME || user.USER_MOBILE;
-    this.logUser(`删除了用户「${userName}」`);
+    // const userName = user.USER_NAME || user.USER_MOBILE;
+    // this.logUser(`删除了用户「${userName}」`);
 	}
 
 	// #####################导出用户数据
