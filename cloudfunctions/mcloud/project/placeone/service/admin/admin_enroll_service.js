@@ -323,9 +323,9 @@ class AdminEnrollService extends BaseProjectAdminService {
     if (!id) {
         this.AppError('请传入有效的场地ID');
     }
-    if (!util.isInt(sort) || sort < 0) {
-        this.AppError('排序值必须为非负整数');
-    }
+    // if (!util.isInt(sort) || sort < 0) {
+    //     this.AppError('排序值必须为非负整数');
+    // }
 
     // 2. 验证场地是否存在且属于当前项目
     const enroll = await EnrollModel.getOne({
@@ -360,11 +360,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     }
 
     // 6. 记录操作日志
-    this.insertLog(
-        `将场地《${enroll.ENROLL_TITLE}》排序设置为${sort}`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //     `将场地《${enroll.ENROLL_TITLE}》排序设置为${sort}`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.OPER
+    // );
 
     return {
         success: true,
@@ -402,9 +402,9 @@ class AdminEnrollService extends BaseProjectAdminService {
     if (![0, 1, 2, 3].includes(editSet)) {
       this.AppError('修改设置值无效');
     }
-    if (order === undefined || !util.isInt(order) || order < 0) {
-      this.AppError('排序值必须为非负整数');
-    }
+    // if (order === undefined || !util.isInt(order) || order < 0) {
+    //   this.AppError('排序值必须为非负整数');
+    // }
 
     // 2. 检查标题唯一性（同一项目下标题不重复）
     const titleCount = await EnrollModel.count({
@@ -459,11 +459,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     }
 
     // 7. 记录操作日志
-    this.insertLog(
-      `添加了场地《${title}》（分类：${cateName}）`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `添加了场地《${title}》（分类：${cateName}）`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
 
     return result;
   }
@@ -504,11 +504,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     await EnrollModel.del(where);
 
     // 6. 记录操作日志
-    this.insertLog(
-        `删除了场地《${enroll.ENROLL_TITLE}》`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //     `删除了场地《${enroll.ENROLL_TITLE}》`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.SYS
+    // );
   }
 
 	/**获取信息 */
@@ -557,11 +557,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     }, updateData);
 
     // 6. 记录操作日志
-    this.insertLog(
-      `更新了场地《${enroll.ENROLL_TITLE}》的表单信息`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //   `更新了场地《${enroll.ENROLL_TITLE}》的表单信息`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.OPER
+    // );
   }
 
 
@@ -594,9 +594,9 @@ class AdminEnrollService extends BaseProjectAdminService {
     if (![0, 1, 2, 3].includes(editSet)) {
       this.AppError('修改设置值无效');
     }
-    if (order === undefined || !util.isInt(order) || order < 0) {
-      this.AppError('排序值必须为非负整数');
-    }
+    // if (order === undefined || !util.isInt(order) || order < 0) {
+    //   this.AppError('排序值必须为非负整数');
+    // }
 
     // 2. 验证场地是否存在且属于当前项目
     const where = {
@@ -656,11 +656,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     }
 
     // 9. 记录操作日志
-    this.insertLog(
-      `修改了场地《${title}》（分类：${cateName}）`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `修改了场地《${title}》（分类：${cateName}）`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
 
     return {
       success: true,
@@ -703,12 +703,12 @@ class AdminEnrollService extends BaseProjectAdminService {
     await EnrollModel.edit(where, updateData);
 
     // 6. 记录操作日志
-    const statusDesc = Number(status) === 1 ? '启用' : '禁用';
-    this.insertLog(
-        `将场地《${enroll.ENROLL_TITLE}》状态修改为${statusDesc}`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.SYS
-    );
+    // const statusDesc = Number(status) === 1 ? '启用' : '禁用';
+    // this.insertLog(
+    //     `将场地《${enroll.ENROLL_TITLE}》状态修改为${statusDesc}`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.SYS
+    // );
   }
 
 	//#############################
@@ -824,11 +824,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     this.statEnrollJoin();
 
     // 7. 记录操作日志
-    this.insertLog(
-        `管理员取消了预订《${enrollJoin.ENROLL_JOIN_ENROLL_TITLE}》（用户ID：${enrollJoin.ENROLL_JOIN_USER_ID}）`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //     `管理员取消了预订《${enrollJoin.ENROLL_JOIN_ENROLL_TITLE}》（用户ID：${enrollJoin.ENROLL_JOIN_USER_ID}）`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.OPER
+    // );
   }
 
 	// #####################导出登记数据
@@ -852,12 +852,12 @@ class AdminEnrollService extends BaseProjectAdminService {
   }) {
         // this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
     // 1. 验证日期格式
-    if (start && !timeUtil.isValidDate(start)) {
-      this.AppError('开始日期格式无效，应为YYYY-MM-DD');
-    }
-    if (end && !timeUtil.isValidDate(end)) {
-      this.AppError('结束日期格式无效，应为YYYY-MM-DD');
-    }
+    // if (start && !timeUtil.isValidDate(start)) {
+    //   this.AppError('开始日期格式无效，应为YYYY-MM-DD');
+    // }
+    // if (end && !timeUtil.isValidDate(end)) {
+    //   this.AppError('结束日期格式无效，应为YYYY-MM-DD');
+    // }
     if (start && end && start > end) {
       this.AppError('开始日期不能晚于结束日期');
     }
@@ -1022,11 +1022,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     });
 
     // 6. 记录操作日志
-    this.insertLog(
-        `计算了场地《${enroll.ENROLL_TITLE}》的排期，有效日期共${validDayCount}天`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //     `计算了场地《${enroll.ENROLL_TITLE}》的排期，有效日期共${validDayCount}天`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.OPER
+    // );
 
     return {
         success: true,
@@ -1060,9 +1060,9 @@ class AdminEnrollService extends BaseProjectAdminService {
     const validDays = [];
     for (const dayItem of days) {
       // 验证日期格式
-      if (!dayItem.day || !timeUtil.isValidDate(dayItem.day)) {
-        this.AppError(`日期格式无效：${dayItem.day}，应为YYYY-MM-DD`);
-      }
+      // if (!dayItem.day || !timeUtil.isValidDate(dayItem.day)) {
+      //   this.AppError(`日期格式无效：${dayItem.day}，应为YYYY-MM-DD`);
+      // }
 
       // 验证时间段数据
       if (!Array.isArray(dayItem.times) || dayItem.times.length === 0) {
@@ -1112,17 +1112,17 @@ class AdminEnrollService extends BaseProjectAdminService {
       DAY_EDIT_IP: this._ip
     }));
 
-    await DayModel.insertMany(insertData);
+    // await DayModel.insertMany(insertData);
 
     // 5. 重新计算排期统计
     await this.statDayCnt(enrollId);
 
     // 6. 记录操作日志
-    this.insertLog(
-      `更新了场地《${enroll.ENROLL_TITLE}》的日期设置，共${validDays.length}天`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //   `更新了场地《${enroll.ENROLL_TITLE}》的日期设置，共${validDays.length}天`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.OPER
+    // );
 
     return {
       success: true,
@@ -1205,11 +1205,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     const result = await TempModel.insert(data);
 
     // 6. 记录操作日志
-    this.insertLog(
-      `添加了预订时间段模板「${name}」，包含${times.length}个时间段`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //   `添加了预订时间段模板「${name}」，包含${times.length}个时间段`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.OPER
+    // );
 
     return result;
   }
@@ -1252,11 +1252,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     await TempModel.edit(where, updateData);
 
     // 6. 记录操作日志
-    this.insertLog(
-      `更新了预订时间段模板「${temp.TEMP_NAME}」的价格为${price}元`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.OPER
-    );
+    // this.insertLog(
+    //   `更新了预订时间段模板「${temp.TEMP_NAME}」的价格为${price}元`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.OPER
+    // );
 
     return {
       success: true,
@@ -1283,11 +1283,11 @@ class AdminEnrollService extends BaseProjectAdminService {
     await TempModel.del(where);
 
     // 3. 记录操作日志
-    this.insertLog(
-        `删除了预订时间段模板「${temp.TEMP_NAME}」`,
-        await this.getAdminInfo(),
-        LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //     `删除了预订时间段模板「${temp.TEMP_NAME}」`,
+    //     await this.getAdminInfo(),
+    //     LogModel.TYPE.SYS
+    // );
 
     return {
         success: true,

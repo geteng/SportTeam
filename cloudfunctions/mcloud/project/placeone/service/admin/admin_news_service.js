@@ -98,11 +98,11 @@ class AdminNewsService extends BaseProjectAdminService {
     });
 
     // 4. 记录操作日志
-    this.insertLog(
-        `删除了资讯《${news.NEWS_TITLE}》`,
-        await this.getAdminInfo(), // 获取当前管理员信息
-        LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //     `删除了资讯《${news.NEWS_TITLE}》`,
+    //     await this.getAdminInfo(), // 获取当前管理员信息
+    //     LogModel.TYPE.SYS
+    // );
 	}
 
 	/**获取资讯信息 */
@@ -198,11 +198,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }, data);
 
     // 6. 记录操作日志
-    this.insertLog(
-      `更新了资讯《${news.NEWS_TITLE}》的富文本内容`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `更新了资讯《${news.NEWS_TITLE}》的富文本内容`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
 
     return urls;
 
@@ -258,11 +258,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }
 
     // 6. 记录操作日志
-    this.insertLog(
-      `更新了资讯《${news.NEWS_TITLE}》的图片，共${imgList.length}张`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `更新了资讯《${news.NEWS_TITLE}》的图片，共${imgList.length}张`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
 
     return imgList;
 	}
@@ -323,11 +323,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }
 
     // 6. 记录操作日志
-    this.insertLog(
-      `修改了资讯《${title}》`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `修改了资讯《${title}》`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
 	}
 
 	/**取得资讯分页列表 */
@@ -415,11 +415,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }, data);
 
     // 4. 记录操作日志
-    this.insertLog(
-      `将资讯《${news.NEWS_TITLE}》状态修改为${status === 1 ? '启用' : '禁用'}`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `将资讯《${news.NEWS_TITLE}》状态修改为${status === 1 ? '启用' : '禁用'}`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
   }
 
   /**置顶与排序设定 */
@@ -448,11 +448,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }, data);
 
     // 4. 记录操作日志
-    this.insertLog(
-      `将资讯《${news.NEWS_TITLE}》排序值设置为${sort}`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `将资讯《${news.NEWS_TITLE}》排序值设置为${sort}`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
   }
 
   /**首页设定 */
@@ -497,11 +497,11 @@ class AdminNewsService extends BaseProjectAdminService {
     }
 
     // 5. 记录操作日志
-    this.insertLog(
-      `将资讯《${news.NEWS_TITLE}》${vouch === 1 ? '添加到' : '移除出'}首页推荐`,
-      await this.getAdminInfo(),
-      LogModel.TYPE.SYS
-    );
+    // this.insertLog(
+    //   `将资讯《${news.NEWS_TITLE}》${vouch === 1 ? '添加到' : '移除出'}首页推荐`,
+    //   await this.getAdminInfo(),
+    //   LogModel.TYPE.SYS
+    // );
   }
 }
 
