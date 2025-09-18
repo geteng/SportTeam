@@ -59,6 +59,7 @@ module.exports = {
   'team/agree': 'team_controller@agree',
   'team/refuse': 'team_controller@refuse',
   'team/delete': 'team_controller@delete',
+  'team/insert': 'team_controller@insert',
 	// 内容  
 	'home/list': 'home_controller@getHomeList',
 	'news/list': 'news_controller@getNewsList',

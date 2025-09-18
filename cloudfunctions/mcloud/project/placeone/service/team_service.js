@@ -121,6 +121,34 @@ class TeamService extends BaseProjectService {
     return { success: true };
   }
 
+
+  /**
+ * 新增组队记录
+ * @param {Object} data 组队数据
+  */
+  async insert(data) {
+    // 1. 验证被邀请者是否存在（假设通过UserModel查询）
+    // const joinerExists = await UserModel.getOne({ _id: data.TEAM_JOINER_ID }, '_id');
+    // if (!joinerExists) {
+    //   this.AppError('被邀请者不存在');
+    // }
+
+    // 2. 验证是否已向该用户发送过未处理的组队请求
+    const duplicate = await TeamModel.getOne({
+      _pid: this._pid,
+      TEAM_CREATOR_ID: data.TEAM_CREATOR_ID,
+      TEAM_JOINER_ID: data.TEAM_JOINER_ID,
+      TEAM_STATUS: TeamModel.STATUS.PENDING
+    }, '_id');
+    if (duplicate) {
+      this.AppError('已向该用户发送过组队请求，请勿重复发送');
+    }
+
+    // 3. 执行新增操作
+    return await TeamModel.insert(data);
+  }
+
+
   /**
    * 删除组队记录
    * @param {string} id 组队记录ID
