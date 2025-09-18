@@ -54,8 +54,11 @@ module.exports = {
 	'admin/user_data_get': 'admin/admin_user_controller@userDataGet',
 	'admin/user_data_export': 'admin/admin_user_controller@userDataExport',
 	'admin/user_data_del': 'admin/admin_user_controller@userDataDel',
-
-
+//组队
+  'team/my_list': 'team_controller@myList',
+  'team/agree': 'team_controller@agree',
+  'team/refuse': 'team_controller@refuse',
+  'team/delete': 'team_controller@delete',
 	// 内容  
 	'home/list': 'home_controller@getHomeList',
 	'news/list': 'news_controller@getNewsList',
