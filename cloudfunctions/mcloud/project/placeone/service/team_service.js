@@ -23,7 +23,7 @@ class TeamService extends BaseProjectService {
     };
     
     // 查询字段
-    let fields = 'TEAM_ID,TEAM_NAME,TEAM_PHONE,TEAM_STATUS,TEAM_ADD_TIME';
+    // let fields = 'TEAM_ID,TEAM_NAME,TEAM_PHONE,TEAM_STATUS,TEAM_ADD_TIME';
     // 返回字段
     let fields = `
     TEAM_ID,

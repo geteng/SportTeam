@@ -1,7 +1,7 @@
 const dataHelper = require('../../../../helper/data_helper.js');
 const pageHelper = require('../../../../helper/page_helper.js');
 const timeHelper = require('../../../../helper/time_helper.js');
-const cloudHelper = require('../../../../helper/time_helper.js');
+const cloudHelper = require('../../../../helper/cloud_helper.js');
 Component({
 	options: {
 		addGlobalClass: true
@@ -460,9 +460,12 @@ Component({
 		},
 
 		// 提交组队申请
-		submitTeamApply: function() {
-			const { teamName, teamMobile } = this.data;
-			
+		submitTeamApply: async function() {
+			const { teamName, teamMobile ,day,used} = this.data;
+      // const { teamName, teamMobile, currentJoinId, day, selectedStart, selectedEnd, nowUserId } = this.data;
+ 
+
+
 			// 验证姓名
 			if (!teamName.trim()) {
 				wx.showToast({ title: '请输入姓名', icon: 'none' });
@@ -481,40 +484,71 @@ Component({
 			}
 			
 			// 触发组队申请事件，传递数据给父组件
-			this.triggerEvent('teamApply', {
-				joinId: this.data.currentJoinId,
-				name: teamName,
-				mobile: teamMobile
-      });
+			// this.triggerEvent('teamApply', {
+			// 	joinId: this.data.currentJoinId,
+			// 	name: teamName,
+			// 	mobile: teamMobile
+      // });
       
       console.log('currentJoinId:', this.data.currentJoinId);
       console.log('teamName:', teamName);
       console.log('teamMobile:', teamMobile);
       console.log('当前用户ID:', this.data.nowUserId)
-      
-      // miniprogram/pages/team/team_page.js
+      console.log('时间:', day)
+      console.log('原来场地人信息:', used)
+      console.log('开始时间:', used[0].start)
+      console.log('结束时间:', used[0].end)
+      console.log('开场人:', used[0].title)
+      console.log('开场人openid:', used[0].userId)
 
-			// this.setData({ teamModalShow: false });
-      // wx.showToast({ title: '申请提交成功', icon: 'success' });
-      
-      // try {
-      //   let data = this.data;
-      //   // 数据校验 
-      //   // data = validate.check(data, PassportBiz.CHECK_FORM, this);
-      //   if (!data) return;
-  
-      //   let opts = {
-      //     title: '申请中'
-      //   }
-      //   await cloudHelper.callCloudSumbit('team/insert', data, opts).then(res => {
-      //     let callback = () => {
-      //       this.setData({ teamModalShow: false });
-      //     }
-      //     wx.showToast({ title: '申请提交成功', icon: 'success' });
-      //   });
-      // } catch (err) {
-      //   console.error(err);
-      // }
+           // used: Array(1)
+      // 0:
+      // end: "12:00"
+      // enrollId: "f1bb8fce68cc01c5000d6ec776c94c88"
+      // forms: {}
+      // isCheckin: 0
+      // start: "12:00"
+      // title: "IE8"
+      // url: "../my_join_detail/enroll_my_join_detail?id=991c758568cd3284001fc491066759d2"
+      // userId: "placeone^^^o-6hc1
+
+
+      try {
+        // 构造调用team/insert所需的参数（对应team_controller.js的insert方法参数要求）
+        const data = {
+          // 队伍拥有者信息（从已预订记录中获取，这里假设currentJoinId关联的预订信息中包含）
+          team_owner_ID: used[0].userId, // 需根据实际业务从预订记录中获取拥有者ID
+          team_owner_name: used[0].title, // 需根据实际业务从预订记录中获取拥有者姓名
+          team_owner_Mobile: '00000', // 可选，拥有者手机号
+          
+          // 申请者信息（当前操作用户）
+          applicantName: teamName,
+          applicantMobile: teamMobile,
+          
+          // 组队时间地点（从组件数据中获取）
+          date: day, // 日期
+          hour: `${used[0].start}-${used[0].end}`, // 时间段
+          place: "1"//columns.find(col => col.enrollId)?.label || '' // 场地名称
+        };
+    
+        // 调用云函数team/insert
+        const opts = { title: '申请提交中' };
+        const res = await cloudHelper.callCloudSumbit('team/insert', data, opts);
+        
+        // 处理成功回调
+        wx.showToast({ title: '组队申请提交成功', icon: 'success' });
+        this.setData({ 
+          teamModalShow: false,
+          teamName: '',
+          teamMobile: ''
+        });
+        
+        // 触发父组件事件（可选）
+        this.triggerEvent('teamApplySuccess', res);
+      } catch (err) {
+        console.error('组队申请提交失败：', err);
+        wx.showToast({ title: '提交失败，请重试', icon: 'none' });
+      }
 
 		},
 

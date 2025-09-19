@@ -8,6 +8,7 @@
 const BaseProjectModel = require('./base_project_model.js');
 
 class TeamModel extends BaseProjectModel {
+  static TABLE_NAME = 'team'; // 这里定义了集合名称为 'team'
 
 }
 
