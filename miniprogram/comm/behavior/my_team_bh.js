@@ -61,29 +61,29 @@ module.exports = Behavior({
 			pageHelper.url(e, this);
 		},
     TheAgree: async function (e) {
-      
+      let TEAM_ID = e.currentTarget.dataset.oid;
+			if (!TEAM_ID) return;
+			let that = this;
+			let callback = async function () {
+				await cloudHelper.callCloudSumbit('team/agree', {
+					TEAM_ID
+				}).then(res => {
+					// pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
+					// that.data.dataList.total--;
+					// that.setData({
+					// 	dataList: that.data.dataList
+					// });
+					pageHelper.showSuccToast('通过成功');
+				}).catch(err => {
+					console.log(err);
+				 });
+			}
+			pageHelper.showConfirm('您确认通过？', callback);
     },
     //这里实现拒绝
     TheRefuse: async function (e) {
 
-			// let oid = e.currentTarget.dataset.oid;
-			// if (!oid) return;
-			// let that = this;
-			// let callback = async function () {
-			// 	await cloudHelper.callCloudSumbit('fav/del', {
-			// 		oid
-			// 	}).then(res => {
-			// 		pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
-			// 		that.data.dataList.total--;
-			// 		that.setData({
-			// 			dataList: that.data.dataList
-			// 		});
-			// 		pageHelper.showSuccToast('删除成功');
-			// 	}).catch(err => {
-			// 		console.log(err);
-			// 	 });
-			// }
-			// pageHelper.showConfirm('您确认删除？', callback);
+
 		}
 	}
 

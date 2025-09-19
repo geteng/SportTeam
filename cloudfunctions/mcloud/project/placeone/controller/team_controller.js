@@ -80,7 +80,7 @@ class TeamController extends BaseProjectController {
    * 获取我的组队列表（仅包含我创建的组队）
    * @param {Object} params 查询参数
    */
-  async myShenQingList(params) {
+  async myReList(params) {
     // 数据校验：仅保留分页参数（服务层默认按状态1=待确认、2=已同意筛选）
     let rules = {
       page: 'int|default=1', // 页码，默认第1页
@@ -121,7 +121,7 @@ class TeamController extends BaseProjectController {
   async agree(params) {
     // 数据校验
     let rules = {
-      id: 'must|id' // 组队记录ID必传
+      TEAM_ID: 'must|TEAM_ID' // 组队记录ID必传
     };
 
     // 取得验证后的数据
@@ -130,7 +130,7 @@ class TeamController extends BaseProjectController {
     // 实例化服务层
     const service = new TeamService();
     // 调用服务层同意方法
-    return await service.editStatus(input.id,1);
+    return await service.editStatus(input.TEAM_ID,1);
   }
 
   /**

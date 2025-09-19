@@ -116,7 +116,7 @@ class TeamService extends BaseProjectService {
     // 更新数据
     let data = {
       TEAM_STATUS: status,
-      TEAM_EDIT_TIME: this._time() // 使用基类的时间方法
+      TEAM_EDIT_TIME: this._timestamp // 使用基类的时间方法
     };
     
     // 调用模型层

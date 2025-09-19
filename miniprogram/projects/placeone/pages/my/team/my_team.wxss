@@ -1,3 +1,9 @@
 @import "../../../../../style/public/article_list.wxss";
 @import "../../../style/skin.wxss";  
 @import "../../../../../style/project/my_team_style.wxss";
+.btn.mid {
+	padding: 0 20rpx;
+	font-size: 36rpx;
+	height: 50rpx;
+	border-radius: 10rpx;
+}
