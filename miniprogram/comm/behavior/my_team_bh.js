@@ -60,8 +60,11 @@ module.exports = Behavior({
 		url: function (e) {
 			pageHelper.url(e, this);
 		},
-
-		bindDelTap: async function (e) {
+    TheAgree: async function (e) {
+      
+    },
+    //这里实现拒绝
+    TheRefuse: async function (e) {
 
 			// let oid = e.currentTarget.dataset.oid;
 			// if (!oid) return;
