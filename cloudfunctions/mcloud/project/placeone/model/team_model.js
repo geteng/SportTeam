@@ -1,97 +1,58 @@
-const BaseModel = require('./base_model.js');
+/**
+ * Notes: 组队实体
+ * Ver : CCMiniCloud Framework 2.0.1 ALL RIGHTS RESERVED BY gttt999 (wechat)
+ * Date: 2022-05-24 19:20:00 
+ */
 
-class TeamModel extends BaseModel {
-  // 表名
-  static get TABLE() {
-    return 'team';
-  }
 
-  // 状态常量
-  static get STATUS() {
-    return {
-      PENDING: 0,     // 待处理
-      AGREED: 1,      // 已同意
-      REFUSED: 2,     // 已拒绝
-      CANCELLED: 3    // 已取消
-    };
-  }
+const BaseProjectModel = require('./base_project_model.js');
 
-  // 状态描述
-  static get STATUS_DESC() {
-    return {
-      0: '待处理',
-      1: '已同意',
-      2: '已拒绝',
-      3: '已取消'
-    };
-  }
+class TeamModel extends BaseProjectModel {
 
-  /**
-   * 获取组队列表
-   * @param {Object} where 查询条件
-   * @param {string} fields 字段
-   * @param {Object} order 排序
-   * @param {number} page 页码
-   * @param {number} size 每页条数
-   */
-  static async getList(where, fields, order, page, size) {
-    return await this._getList(
-      this.TABLE,
-      where,
-      fields,
-      order,
-      page,
-      size
-    );
-  }
-
-  /**
-   * 获取单条组队记录
-   * @param {Object} where 查询条件
-   * @param {string} fields 字段
-   */
-  static async getOne(where, fields = '*') {
-    return await this._getOne(
-      this.TABLE,
-      where,
-      fields
-    );
-  }
-
-  /**
-   * 更新组队记录
-   * @param {Object} where 更新条件
-   * @param {Object} data 更新数据
-   */
-  static async edit(where, data) {
-    return await this._edit(
-      this.TABLE,
-      where,
-      data
-    );
-  }
-
-  /**
-   * 删除组队记录
-   * @param {Object} where 删除条件
-   */
-  static async del(where) {
-    return await this._del(
-      this.TABLE,
-      where
-    );
-  }
-
-  /**
-   * 新增组队记录
-   * @param {Object} data 组队数据
-   */
-  static async insert(data) {
-    return await this._insert(
-      this.TABLE,
-      data
-    );
-  }
 }
+
+// 集合名
+TeamModel.CL = BaseProjectModel.C('team');
+
+TeamModel.DB_STRUCTURE = {
+	_pid: 'string|true', // 项目ID
+	TEAM_ID: 'string|true', // 组队记录ID
+
+	TEAM_OWNER_ID: 'string|true|comment=队伍拥有者ID',
+	TEAM_OWNER_NAME: 'string|true|comment=队伍拥有者姓名',
+	TEAM_OWNER_MOBILE: 'string|false|comment=队伍拥有者手机',
+
+	TEAM_DATE: 'string|true|comment=组队日期（yyyy-mm-dd）',
+	TEAM_HOUR: 'string|true|comment=组队时间（hh:mm）',
+	TEAM_PLACE: 'string|true|comment=组队场地',
+
+	TEAM_APPLICANT_ID: 'string|true|comment=申请组队人ID',
+	TEAM_APPLICANT_NAME: 'string|true|comment=申请组队人姓名',
+	TEAM_APPLICANT_MOBILE: 'string|false|comment=申请组队人手机',
+
+	TEAM_STATUS: 'int|true|default=0|comment=申请状态 0=等待 1=通过 2=拒绝',
+
+	TEAM_ADD_TIME: 'int|true|comment=创建时间戳',
+	TEAM_EDIT_TIME: 'int|true|comment=修改时间戳',
+	TEAM_ADD_IP: 'string|false|comment=创建IP',
+	TEAM_EDIT_IP: 'string|false|comment=修改IP',
+};
+
+// 字段前缀
+TeamModel.FIELD_PREFIX = "TEAM_";
+
+// 状态常量定义
+TeamModel.STATUS = {
+	PENDING: 0,  // 等待
+	AGREED: 1,   // 通过
+	REFUSED: 2   // 拒绝
+};
+
+// 状态描述
+TeamModel.STATUS_DESC = {
+	0: '等待',
+	1: '通过',
+	2: '拒绝'
+};
 
 module.exports = TeamModel;
