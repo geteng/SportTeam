@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "我的组队",
-  "disableScroll": true,
-  "usingComponents": {}
+	"usingComponents": {},
+	"enablePullDownRefresh": true,
+	"navigationBarTitleText": "我的组队"
 }
