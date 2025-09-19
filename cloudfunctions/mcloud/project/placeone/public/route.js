@@ -56,6 +56,7 @@ module.exports = {
 	'admin/user_data_del': 'admin/admin_user_controller@userDataDel',
 //组队
   'team/my_list': 'team_controller@myList',
+  'team/myShenQingList': 'team_controller@myShenQingList',
   'team/agree': 'team_controller@agree',
   'team/refuse': 'team_controller@refuse',
   'team/delete': 'team_controller@delete',

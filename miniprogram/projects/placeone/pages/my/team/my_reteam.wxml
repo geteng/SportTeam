@@ -1,2 +1,1 @@
-<!--projects/placeone/pages/my/team/my_reteam.wxml-->
-<text>projects/placeone/pages/my/team/my_reteam.wxml</text>
+<include src="../../../../../tpls/project/my_reteam_tpl.wxml" />
