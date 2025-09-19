@@ -122,7 +122,11 @@ class TeamService extends BaseProjectService {
     // 调用模型层
     return await TeamModel.edit(where, data);
   }
-
+// 在TeamService中添加
+  async insert(data) {
+    // 可添加业务校验（如避免重复申请等）
+    return await TeamModel.insert(data);
+  }
 }
 
 module.exports = TeamService;

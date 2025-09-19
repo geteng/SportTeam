@@ -1,6 +1,7 @@
 const dataHelper = require('../../../../helper/data_helper.js');
 const pageHelper = require('../../../../helper/page_helper.js');
 const timeHelper = require('../../../../helper/time_helper.js');
+const cloudHelper = require('../../../../helper/time_helper.js');
 Component({
 	options: {
 		addGlobalClass: true
@@ -490,9 +491,31 @@ Component({
       console.log('teamName:', teamName);
       console.log('teamMobile:', teamMobile);
       console.log('当前用户ID:', this.data.nowUserId)
-			
-			this.setData({ teamModalShow: false });
-			wx.showToast({ title: '申请提交成功', icon: 'success' });
+      
+      // miniprogram/pages/team/team_page.js
+
+			// this.setData({ teamModalShow: false });
+      // wx.showToast({ title: '申请提交成功', icon: 'success' });
+      
+      // try {
+      //   let data = this.data;
+      //   // 数据校验 
+      //   // data = validate.check(data, PassportBiz.CHECK_FORM, this);
+      //   if (!data) return;
+  
+      //   let opts = {
+      //     title: '申请中'
+      //   }
+      //   await cloudHelper.callCloudSumbit('team/insert', data, opts).then(res => {
+      //     let callback = () => {
+      //       this.setData({ teamModalShow: false });
+      //     }
+      //     wx.showToast({ title: '申请提交成功', icon: 'success' });
+      //   });
+      // } catch (err) {
+      //   console.error(err);
+      // }
+
 		},
 
 		// 处理申请组队窗口的点击事件
