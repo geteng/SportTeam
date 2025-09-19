@@ -1,4 +1,4 @@
-const behavior = require('../../../../../comm/behavior/my_team_bh.js');
+const behavior = require('../../../../../comm/behavior/my_reteam_bh.js');
 const ProjectBiz = require('../../../biz/project_biz.js');
 
 Page({
