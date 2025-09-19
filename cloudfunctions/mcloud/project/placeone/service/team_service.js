@@ -2,200 +2,127 @@ const BaseProjectService = require('./base_project_service.js');
 const util = require('../../../framework/utils/util.js');
 const TeamModel = require('../model/team_model.js'); 
 
-
 class TeamService extends BaseProjectService {
 
-
-  /**
-   * 获取我的组队列表
-   * @param {Object} params 查询参数
-   * @param {number} params.page 页码
-   * @param {number} params.size 每页条数
-   * @param {number} params.status 状态筛选
-   */
-  async getMyList(params) {
-    const { page = 1, size = 10, status } = params;
+//查询有哪些人找我组队
+// let teamService = new TeamService();
+// let teamList = await teamService.getListByOwner('用户ID');
+// cloudfunctions/mcloud/project/placeone/service/team/team_service.js
+  async getListByOwner(ownerId,
+    page,
+    size,
+    isTotal = true,
+    oldTotal = 0) {
+    // 数据校验
+    if (!ownerId) throw new Error('ownerId不能为空');
     
-    // 构建查询条件：只查询当前用户相关的组队记录
-    const where = {
-      _pid: this._pid,
-      $or: [
-        { TEAM_CREATOR_ID: this._userId }, // 我创建的
-        { TEAM_JOINER_ID: this._userId }   // 我加入的
-      ]
+    // 查询条件
+    let where = {
+      TEAM_OWNER_ID: ownerId,
+      TEAM_STATUS: ['in', [1, 2]] // 1=待确认, 2=已同意
     };
     
-    // 如果有状态筛选，添加状态条件
-    if (status !== undefined) {
-      where.TEAM_STATUS = Number(status);
-    }
+    // 查询字段
+    let fields = 'TEAM_ID,TEAM_NAME,TEAM_PHONE,TEAM_STATUS,TEAM_ADD_TIME';
+    // 返回字段
+    let fields = `
+    TEAM_ID,
+    TEAM_OWNER_ID,
+    TEAM_APPLICANT_ID,
+    TEAM_APPLICANT_NAME,
+    TEAM_APPLICANT_MOBILE,
+    TEAM_DATE,
+    TEAM_HOUR,
+    TEAM_PLACE,
+    TEAM_STATUS,
+    TEAM_ADD_TIME,
+    TEAM_EDIT_TIME
+  `;
+    // 排序规则（按申请时间倒序）
+    let orderBy = { TEAM_ADD_TIME: 'desc' };
     
-    // 分页查询
-    const result = await TeamModel.getList(
-      where,
-      'TEAM_ID, TEAM_TITLE, TEAM_CREATOR_ID, TEAM_CREATOR_NAME, TEAM_JOINER_ID, TEAM_JOINER_NAME, TEAM_STATUS, TEAM_CREATE_TIME',
-      { TEAM_CREATE_TIME: 'desc' },
-      page,
-      size
-    );
-    
-    // 补充状态描述
-    result.list.forEach(item => {
-      item.TEAM_STATUS_DESC = this._getStatusDesc(item.TEAM_STATUS);
-      // 判断当前用户是创建者还是加入者
-      item.isCreator = item.TEAM_CREATOR_ID === this._userId;
-    });
-    
-    return result;
+    // 调用数据库工具查询
+    return await TeamModel.getList(where, fields, orderBy, page, size, isTotal, oldTotal);
   }
 
-  /**
-   * 同意组队请求
-   * @param {string} id 组队记录ID
-   */
-  async agree(id) {
-    if (!id) {
-      this.AppError('请传入有效的组队记录ID');
-    }
-    
-    // 1. 查询组队记录，验证权限
-    const team = await TeamModel.getOne({
-      _id: id,
-      _pid: this._pid,
-      TEAM_JOINER_ID: this._userId, // 只能同意自己收到的请求
-      TEAM_STATUS: TeamModel.STATUS.PENDING // 只能同意待处理状态的请求
-    });
-    
-    if (!team) {
-      this.AppError('该组队请求不存在或已处理');
-    }
-    
-    // 2. 更新组队状态为已同意
-    await TeamModel.edit(
-      { _id: id, _pid: this._pid },
-      {
-        TEAM_STATUS: TeamModel.STATUS.AGREED,
-        TEAM_UPDATE_TIME: this._timestamp,
-        TEAM_UPDATE_IP: this._ip
-      }
-    );
-    
-    // 3. 记录操作日志
-    
-    return { success: true };
-  }
+//查询我参加了哪些组队
+// {
+//   list: [
+//     {
+//       TEAM_ID: '组队记录ID',
+//       TEAM_OWNER_ID: '队伍拥有者ID',
+//       TEAM_NAME: '申请人姓名',
+//       TEAM_PHONE: '申请人电话',
+//       TEAM_STATUS: 1, // 状态值
+//       TEAM_ADD_TIME: '2023-01-01 00:00:00' // 申请时间
+//     }
+//   ],
+//   total: 10 // 符合条件的总记录数
+// }
 
-  /**
-   * 拒绝组队请求
-   * @param {string} id 组队记录ID
-   */
-  async refuse(id) {
-    if (!id) {
-      this.AppError('请传入有效的组队记录ID');
-    }
-    
-    // 1. 查询组队记录，验证权限
-    const team = await TeamModel.getOne({
-      _id: id,
-      _pid: this._pid,
-      TEAM_JOINER_ID: this._userId, // 只能拒绝自己收到的请求
-      TEAM_STATUS: TeamModel.STATUS.PENDING // 只能拒绝待处理状态的请求
-    });
-    
-    if (!team) {
-      this.AppError('该组队请求不存在或已处理');
-    }
-    
-    // 2. 更新组队状态为已拒绝
-    await TeamModel.edit(
-      { _id: id, _pid: this._pid },
-      {
-        TEAM_STATUS: TeamModel.STATUS.REFUSED,
-        TEAM_UPDATE_TIME: this._timestamp,
-        TEAM_UPDATE_IP: this._ip
-      }
-    );
-    
-    // 3. 记录操作日志
-    
-    return { success: true };
-  }
+// let teamService = new TeamService();
+// let result = await teamService.getListByApplicant('用户ID', 1, 10);
 
 
-  /**
- * 新增组队记录
- * @param {Object} data 组队数据
-  */
-  async insert(data) {
-    // 1. 验证被邀请者是否存在（假设通过UserModel查询）
-    // const joinerExists = await UserModel.getOne({ _id: data.TEAM_JOINER_ID }, '_id');
-    // if (!joinerExists) {
-    //   this.AppError('被邀请者不存在');
-    // }
-
-    // 2. 验证是否已向该用户发送过未处理的组队请求
-    const duplicate = await TeamModel.getOne({
-      _pid: this._pid,
-      TEAM_CREATOR_ID: data.TEAM_CREATOR_ID,
-      TEAM_JOINER_ID: data.TEAM_JOINER_ID,
-      TEAM_STATUS: TeamModel.STATUS.PENDING
-    }, '_id');
-    if (duplicate) {
-      this.AppError('已向该用户发送过组队请求，请勿重复发送');
-    }
-
-    // 3. 执行新增操作
-    return await TeamModel.insert(data);
-  }
-
-
-  /**
-   * 删除组队记录
-   * @param {string} id 组队记录ID
-   */
-  async delete(id) {
-    if (!id) {
-      this.AppError('请传入有效的组队记录ID');
-    }
+  // cloudfunctions/mcloud/project/placeone/service/team/team_service.js
+  async getListByApplicant(applicantId, page, size, isTotal = true, oldTotal = 0) {
+    // 参数校验
+    if (!applicantId) throw new Error('applicantId不能为空');
     
-    // 1. 查询组队记录，验证权限（创建者或加入者都可以删除）
-    const team = await TeamModel.getOne({
-      _id: id,
-      _pid: this._pid,
-      $or: [
-        { TEAM_CREATOR_ID: this._userId },
-        { TEAM_JOINER_ID: this._userId }
-      ]
-    });
-    
-    if (!team) {
-      this.AppError('该组队记录不存在或无权删除');
-    }
-    
-    // 2. 执行删除操作
-    await TeamModel.del({
-      _id: id,
-      _pid: this._pid
-    });
-    
-    // 3. 记录操作日志
-    
-    return { success: true };
-  }
-
-  /**
-   * 获取状态描述
-   * @param {number} status 状态值
-   */
-  _getStatusDesc(status) {
-    const statusMap = {
-      [TeamModel.STATUS.PENDING]: '待处理',
-      [TeamModel.STATUS.AGREED]: '已同意',
-      [TeamModel.STATUS.REFUSED]: '已拒绝',
-      [TeamModel.STATUS.CANCELLED]: '已取消'
+    // 查询条件
+    let where = {
+      TEAM_APPLICANT_ID: applicantId,
+      TEAM_STATUS: ['in', [0, 1, 2]] // 1=待确认, 2=已同意
     };
-    return statusMap[status] || '未知状态';
+    
+    // 返回字段
+    let fields = `
+      TEAM_ID,
+      TEAM_OWNER_ID,
+      TEAM_OWNER_NAME,
+      TEAM_OWNER_MOBILE,
+      TEAM_DATE,
+      TEAM_HOUR,
+      TEAM_PLACE,
+      TEAM_STATUS,
+      TEAM_ADD_TIME,
+      TEAM_EDIT_TIME
+    `;
+    
+    // 排序规则（按申请时间倒序）
+    let orderBy = { TEAM_ADD_TIME: 'desc' };
+    
+    // 调用模型层查询
+    return await TeamModel.getList(
+      where, 
+      fields, 
+      orderBy, 
+      page, 
+      size, 
+      isTotal, 
+      oldTotal
+    );
   }
+
+// 修改申请状态
+// cloudfunctions/mcloud/project/placeone/service/team/team_service.js
+  async editStatus(teamId, status) {
+    // 参数校验
+    if (!teamId || !status) throw new Error('参数不全');
+    
+    // 更新条件
+    let where = { TEAM_ID: teamId };
+    
+    // 更新数据
+    let data = {
+      TEAM_STATUS: status,
+      TEAM_EDIT_TIME: this._time() // 使用基类的时间方法
+    };
+    
+    // 调用模型层
+    return await TeamModel.edit(where, data);
+  }
+
 }
 
 module.exports = TeamService;
