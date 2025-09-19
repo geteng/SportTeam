@@ -19,7 +19,7 @@ class TeamService extends BaseProjectService {
     // 查询条件
     let where = {
       TEAM_OWNER_ID: ownerId,
-      TEAM_STATUS: ['in', [1, 2]] // 1=待确认, 2=已同意
+      TEAM_STATUS: ['in', [0, 1, 2]] // 1=待确认, 2=已同意
     };
     
     // 查询字段
