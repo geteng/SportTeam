@@ -355,25 +355,15 @@ class EnrollService extends BaseProjectService {
       ENROLL_JOIN_ENROLL_ID: enrollId,
       ENROLL_JOIN_DAY: day,
       ENROLL_JOIN_STATUS: EnrollJoinModel.STATUS.SUCC,
-      or: [
-        {
-          ENROLL_JOIN_START: ['<=', start],
-          ENROLL_JOIN_END: ['>=', start]
-        },
-        {
-          ENROLL_JOIN_START: ['<=', end],
-          ENROLL_JOIN_END: ['>=', end]
-        },
-        {
-          ENROLL_JOIN_START: ['>=', start],
-          ENROLL_JOIN_END: ['<=', end]
-        }
-      ]
+      // 简化的时间冲突条件：两个时间段有交集
+      ENROLL_JOIN_START: ['<', end],    // 旧开始 < 新结束
+      ENROLL_JOIN_END: ['>', start]     // 旧结束 > 新开始
     };
     const conflictCount = await EnrollJoinModel.count(conflictWhere);
     if (conflictCount > 0) {
       this.AppError('该时间段已被预订，请选择其他时间');
     }
+
 
     // 4. 处理表单数据
     const joinObj = dataUtil.dbForms2Obj(forms || []);

@@ -85,16 +85,16 @@ Component({
 
 		detailModalShow: false, //详情窗口
     apptData: null,   //预订
-    teamForm: {
-      name: '',
-      phone: ''
-    },
+  
     currentJoinId: '', // 当前预订ID
     
     teamModalShow: false, // 申请组队窗口显示状态
     teamName: '', // 申请组队姓名
     teamMobile: '', // 申请组队手机号
-    teamMobileError: '' // 申请组队手机号错误提示
+    teamMobileError: '', // 申请组队手机号错误提示
+
+    teamInInfo: '',
+    teamInInfoError: ''
 	},
 
 	/**
@@ -468,30 +468,27 @@ Component({
       // const { teamName, teamMobile, currentJoinId, day, selectedStart, selectedEnd, nowUserId } = this.data;
  
 
-
 			// 验证姓名
 			if (!teamName.trim()) {
-				wx.showToast({ title: '请输入姓名', icon: 'none' });
+        // wx.showToast({ title: '请输入姓名', icon: 'none' });
+        wx.showToast({ title: '请输入申请内容', icon: 'none' });
+        this.setData({ teamMobileError: '请输入申请内容' });
 				return;
 			}
-			
+      teamMobile = "000"
+      
 			// 验证手机号
-			if (!teamMobile) {
-				this.setData({ teamMobileError: '请输入手机号码' });
-				return;
-			}
+			// if (!teamMobile) {
+			// 	this.setData({ teamMobileError: '请输入手机号码' });
+			// 	return;
+			// }
 			
-			if (!/^1[3-9]\d{9}$/.test(teamMobile)) {
-				this.setData({ teamMobileError: '请输入正确的手机号码' });
-				return;
-			}
+			// if (!/^1[3-9]\d{9}$/.test(teamMobile)) {
+			// 	this.setData({ teamMobileError: '请输入正确的手机号码' });
+			// 	return;
+			// }
 			
-			// 触发组队申请事件，传递数据给父组件
-			// this.triggerEvent('teamApply', {
-			// 	joinId: this.data.currentJoinId,
-			// 	name: teamName,
-			// 	mobile: teamMobile
-      // });
+
       
       console.log('currentJoinId:', this.data.currentJoinId);
       console.log('teamName:', teamName);
@@ -580,5 +577,13 @@ Component({
         teamName: e.detail.value
       });
     },
+
+    bindTeamInfoInput: function(e) {
+      this.setData({
+        teamName: e.detail.value,
+        teamMobileError: '' // 清空错误提示
+      });
+    },
+
 	}
 })

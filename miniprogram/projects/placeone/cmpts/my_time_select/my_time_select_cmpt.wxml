@@ -71,18 +71,25 @@
 
 <!-- 申请组队弹窗 -->
 <cmpt-modal wx:if="{{teamModalShow}}" model:show="{{teamModalShow}}" type="dialog" title="申请组队" bind:click="bindTeamCmpt" class="modal-form" cancelText="取消" confirmText="确认">
-	<view class="form-group" style="padding:0 10rpx">
+	<!-- <view class="form-group" style="padding:0 10rpx">
 		<view class="left">姓名：</view>
 		<view class="right">
 			<input bindinput="bindTeamNameInput" value="{{teamName}}" placeholder="请输入您的姓名" class="form-input"></input>
 		</view>
-	</view>
-	<view class="form-group" style="padding:0 10rpx">
+	</view> -->
+	<!-- <view class="form-group" style="padding:0 10rpx">
 		<view class="left">电话：</view>
 		<view class="right">
 			<input bindinput="bindTeamMobileInput" value="{{teamMobile}}" type="number" maxlength="11" placeholder="请输入您的手机号码" class="form-input"></input>
 		</view>
+  </view> -->
+  
+  <view class="form-group" style="padding:0 10rpx">
+		<view class="right">
+			<input bindinput="bindTeamInfoInput" value="{{teamName}}" placeholder="请填写您的申请信息" class="form-input" placeholder-style="text-align: left;" style="text-align: left;"></input>
+		</view>
 	</view>
+
 	<view wx:if="{{teamMobileError}}" class="form-group" style="padding:0 10rpx">
 		<view class="left"></view>
 		<view class="right">

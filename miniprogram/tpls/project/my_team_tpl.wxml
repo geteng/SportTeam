@@ -5,16 +5,17 @@
 		<view wx:for="{{dataList.list}}" wx:key="key" class="item shadow item-simple" bindtap="url" data-url="{{}}">
 			<view class="simple">
 				<view class="simple-right">
-					<view class="simple-title content-cut-one">{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}
-            <button wx:if="{{item.TEAM_STATUS  === 0}}" catchtap="TheAgree" data-oid="{{item.TEAM_ID}}" class="margin-left btn mid bg-white text-green"><text class=""></text>通过</button>
-            <button wx:if="{{item.TEAM_STATUS === 0}}" catchtap="TheRefuse" data-oid="{{item.TEAM_ID}}" class="margin-left btn mid bg-white text-red"><text class=""></text>拒绝</button>
+					<view class="simple-title content-cut-one" >{{item.TEAM_APPLICANT_NAME}}
           </view>
 					<view class="simple-desc">
-						<text class="text-grey text-bold">{{item.TEAM_APPLICANT_NAME}}{{"  电话:"}}{{item.TEAM_APPLICANT_MOBILE}}</text>
-            <text class="margin-left-s">{{item.TEAM_EDIT_TIME}}</text>
-            <text wx:if="{{item.TEAM_STATUS === 0}}" class="margin-left-s text-blue">等待处理</text>
-            <text wx:elif="{{item.TEAM_STATUS === 1}}" class="margin-left-s text-green">通过</text>
-            <text wx:else="{{item.TEAM_STATUS === 2}}" class="margin-left-s text-red">拒绝</text>
+            <!-- <text class="text-grey text-bold">{{"场地:"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}{{" 申请时间:"}}{{item.TEAM_APPLICANT_MOBILE}}</text> -->
+            <text class="text-grey text-bold">{{"场地:"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}</text>
+            <!-- <text class="margin-left-s">{{item.TEAM_EDIT_TIME}}</text> -->
+            <text wx:if="{{item.TEAM_STATUS === 0}}" class="margin-left-s text-blue"></text>
+            <text wx:elif="{{item.TEAM_STATUS === 1}}" class="margin-left-s text-green">已通过</text>
+            <text wx:else="{{item.TEAM_STATUS === 2}}" class="margin-left-s text-red">已拒绝</text>
+            <button wx:if="{{item.TEAM_STATUS  === 0}}" catchtap="TheAgree" data-oid="{{item.TEAM_ID}}" class="margin-left btn mid bg- text-green border-green" style="background-color: rgba(251, 189, 8, 0.2);">通过</button>
+            <button wx:if="{{item.TEAM_STATUS === 0}}" catchtap="TheRefuse" data-oid="{{item.TEAM_ID}}" class="margin-left btn mid bg- text-red border-red" style="background-color: rgba(251, 189, 8, 0.2);">拒绝</button>
 					</view>
 				</view>
 			</view>

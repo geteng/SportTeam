@@ -68,11 +68,6 @@ module.exports = Behavior({
 				await cloudHelper.callCloudSumbit('team/agree', {
 					TEAM_ID
 				}).then(res => {
-					// pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
-					// that.data.dataList.total--;
-					// that.setData({
-					// 	dataList: that.data.dataList
-          // });
           pageHelper.showSuccToast('通过成功');
           // 刷新列表：获取组件实例并调用reload方法
           const commList = that.selectComponent('#comm-list-team');
@@ -92,11 +87,6 @@ module.exports = Behavior({
 				await cloudHelper.callCloudSumbit('team/refuse', {
 					TEAM_ID
 				}).then(res => {
-					// pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
-					// that.data.dataList.total--;
-					// that.setData({
-					// 	dataList: that.data.dataList
-          // });
           pageHelper.showSuccToast('拒绝成功');
           // 刷新列表：获取组件实例并调用reload方法
           const commList = that.selectComponent('#comm-list-team');
