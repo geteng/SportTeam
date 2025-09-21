@@ -87,7 +87,7 @@ module.exports = Behavior({
 			if (!TEAM_ID) return;
 			let that = this;
 			let callback = async function () {
-				await cloudHelper.callCloudSumbit('team/agree', {
+				await cloudHelper.callCloudSumbit('team/refuse', {
 					TEAM_ID
 				}).then(res => {
 					// pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
