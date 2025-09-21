@@ -140,7 +140,7 @@ class TeamController extends BaseProjectController {
   async refuse(params) {
     // 数据校验
     let rules = {
-      id: 'must|id' // 组队记录ID必传
+      TEAM_ID: 'must|TEAM_ID' // 组队记录ID必传
     };
 
     // 取得验证后的数据
@@ -149,7 +149,7 @@ class TeamController extends BaseProjectController {
     // 实例化服务层
     const service = new TeamService();
     // 调用服务层拒绝方法
-    return await service.editStatus(input.id,2);
+    return await service.editStatus(input.TEAM_ID,2);
   }
 
   /**
