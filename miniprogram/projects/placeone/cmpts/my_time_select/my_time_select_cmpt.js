@@ -296,7 +296,10 @@ Component({
           // 点击已预订方格，弹出申请组队窗口
           // 新增判断：当usedText存在且内容为"我已约"时触发组队申请
           if (timeNode.usedText && timeNode.usedText.trim() === '我已约') {
-          }else{
+          }else if(timeNode.error && timeNode.error.trim() === '已过期'){
+            
+          }
+          else{
             this.onBookedClick(timeNode);
           }
 					return;
