@@ -3,7 +3,7 @@
 @import "../../../../../style/project/my_team_style.wxss";
 .btn.mid {
 	padding: 0 20rpx;
-	font-size: 36rpx;
+	font-size: 28rpx;
 	height: 50rpx;
 	border-radius: 10rpx;
 }

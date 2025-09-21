@@ -72,7 +72,8 @@ module.exports = Behavior({
 					// that.data.dataList.total--;
 					// that.setData({
 					// 	dataList: that.data.dataList
-					// });
+          // });
+          pageHelper.commListListener(that, e);
 					pageHelper.showSuccToast('通过成功');
 				}).catch(err => {
 					console.log(err);
@@ -82,27 +83,27 @@ module.exports = Behavior({
     },
     //这里实现拒绝
     TheRefuse: async function (e) {
-
+      let TEAM_ID = e.currentTarget.dataset.oid;
+			if (!TEAM_ID) return;
+			let that = this;
+			let callback = async function () {
+				await cloudHelper.callCloudSumbit('team/agree', {
+					TEAM_ID
+				}).then(res => {
+					// pageHelper.delListNode(oid, that.data.dataList.list, 'FAV_OID');
+					// that.data.dataList.total--;
+					// that.setData({
+					// 	dataList: that.data.dataList
+          // });
+          pageHelper.commListListener(that, e);
+					pageHelper.showSuccToast('拒绝成功');
+				}).catch(err => {
+					console.log(err);
+				 });
+			}
+			pageHelper.showConfirm('您确认拒绝？', callback);
 
 		}
 	}
 
-  // methods: {
-  //   /**
-  //    * 加载组队列表数据
-  //    */
-  //   myCommListListener: async function (e) {
-  //     const params = e.detail.params;
-  //     try {
-  //       const res = await cloudHelper.callCloudData('team/my_list', params, {
-  //         loading: false
-  //       });
-  //       this.setData({
-  //         dataList: res.data
-  //       });
-  //     } catch (err) {
-  //       console.error('加载组队列表失败', err);
-  //     }
-  //   }
-  // }
 });
