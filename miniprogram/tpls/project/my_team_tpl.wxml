@@ -1,4 +1,4 @@
-<cmpt-comm-list type="my-fav" search="{{search||''}}" _menus="{{sortMenus||[]}}" _items="{{sortItems||[]}}" route="team/my_list" isTotalMenu="{{false}}" topBottom="120" placeholder="搜索标题" returnUrl='/pages/my/team/my_team' bind:list="myCommListListener">
+<cmpt-comm-list id="comm-list-team" type="my-fav" search="{{search||''}}" _menus="{{sortMenus||[]}}" _items="{{sortItems||[]}}" route="team/my_list" isTotalMenu="{{false}}" topBottom="120" placeholder="搜索标题" returnUrl='/pages/my/team/my_team' bind:list="myCommListListener">
 
 	<!-- List Begin -->
 	<view class="text-pic-list-box">

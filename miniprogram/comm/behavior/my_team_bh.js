@@ -73,8 +73,10 @@ module.exports = Behavior({
 					// that.setData({
 					// 	dataList: that.data.dataList
           // });
-          pageHelper.commListListener(that, e);
-					pageHelper.showSuccToast('通过成功');
+          pageHelper.showSuccToast('通过成功');
+          // 刷新列表：获取组件实例并调用reload方法
+          const commList = that.selectComponent('#comm-list-team');
+          if (commList) commList.reload(); // 重新加载列表数据
 				}).catch(err => {
 					console.log(err);
 				 });
@@ -95,8 +97,10 @@ module.exports = Behavior({
 					// that.setData({
 					// 	dataList: that.data.dataList
           // });
-          pageHelper.commListListener(that, e);
-					pageHelper.showSuccToast('拒绝成功');
+          pageHelper.showSuccToast('拒绝成功');
+          // 刷新列表：获取组件实例并调用reload方法
+          const commList = that.selectComponent('#comm-list-team');
+          if (commList) commList.reload(); // 重新加载列表数据
 				}).catch(err => {
 					console.log(err);
 				 });
