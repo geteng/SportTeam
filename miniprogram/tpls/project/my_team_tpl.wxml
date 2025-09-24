@@ -9,7 +9,7 @@
           </view>
 					<view class="simple-desc">
             <!-- <text class="text-grey text-bold">{{"场地:"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}{{" 申请时间:"}}{{item.TEAM_APPLICANT_MOBILE}}</text> -->
-            <text class="text-grey text-bold">{{"场地:"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}</text>
+            <text class="text-grey text-bold">{{item.TEAM_OWNER_MOBILE}}{{":"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}</text>
             <!-- <text class="margin-left-s">{{item.TEAM_EDIT_TIME}}</text> -->
             <text wx:if="{{item.TEAM_STATUS === 0}}" class="margin-left-s text-blue"></text>
             <text wx:elif="{{item.TEAM_STATUS === 1}}" class="margin-left-s text-green">已通过</text>

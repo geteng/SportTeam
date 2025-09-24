@@ -92,7 +92,7 @@ Component({
     teamName: '', // 申请组队姓名
     teamMobile: '', // 申请组队手机号
     teamMobileError: '', // 申请组队手机号错误提示
-
+    teamChagndi: '', //新增场地字段
     teamInInfo: '',
     teamInInfoError: ''
 	},
@@ -118,7 +118,7 @@ Component({
 	 */
 	methods: {
     // 点击已预订方格触发
-    onBookedClick: function(timeNode) {
+    onBookedClick: function(timeNode,changdi) {
       //这里打印timeNode内容
       // let timeNode = this.data.columns[columnIdx].times[idx];
       console.log('timeNode内容:', timeNode); // 添加这行打印内容
@@ -130,6 +130,7 @@ Component({
         teamModalShow: true,
         teamName: '',
         teamMobile: '',
+        teamChagndi: changdi,
         teamMobileError: ''
       });
     },
@@ -271,12 +272,31 @@ Component({
 		},
 
 		bindSelectTap: function (e) {
+      // console.log('timeNodeeeeeeee:', e);
 
 			let columns = this.data.columns;
 
 			//  选择
 			let idx = pageHelper.dataset(e, 'idx');
 			let columnIdx = pageHelper.dataset(e, 'columnidx');
+
+      // console.log('timeNodeeeeeeeecolumnIdx:', columnIdx);
+      // console.log('timeNodeeeeeeeeidx:', idx);
+      // console.log('timeNodeeeeeeeeidxthis.data.columnsSource:', this.data.columnsSource.list);
+
+      let changdi = '';
+      if (this.data && this.data.columnsSource && this.data.columnsSource.list) {
+        // 获取指定下标的元素
+        const columnItem = this.data.columnsSource.list[columnIdx];
+        // 检查元素是否存在，再获取label
+        const label = columnItem ? columnItem.label : '';
+        changdi=label
+        // 可以在这里使用获取到的label
+        console.log('获取到的label:', changdi);
+      } else {
+        console.log('数据结构不完整，无法获取label');
+      }
+
 
 			let timeNode = this.data.columns[columnIdx].times[idx];
 
@@ -300,7 +320,7 @@ Component({
             
           }
           else{
-            this.onBookedClick(timeNode);
+            this.onBookedClick(timeNode,changdi);
           }
 					return;
 				} else {
@@ -464,13 +484,13 @@ Component({
 
 		// 提交组队申请
 		submitTeamApply: async function() {
-			const { teamName, teamMobile ,day,used} = this.data;
+			const { teamName, teamMobile ,day,used,teamChagndi} = this.data;
       // const { teamName, teamMobile, currentJoinId, day, selectedStart, selectedEnd, nowUserId } = this.data;
  
 
 			// 验证姓名
 			if (!teamName.trim()) {
-        // wx.showToast({ title: '请输入姓名', icon: 'none' });
+        // wx.showToast({ title: '请输入昵称', icon: 'none' });
         wx.showToast({ title: '请输入申请内容', icon: 'none' });
         this.setData({ teamMobileError: '请输入申请内容' });
 				return;
@@ -497,7 +517,9 @@ Component({
       console.log('当前用户ID:', this.data.nowUserId)
       console.log('时间:', day)
       console.log('原来场地人信息:', used)
+      console.log('原来场地人地址:', teamChagndi)
 
+      
       let usedstart="";
       let usedend="";
       let usedtitle="";
@@ -525,7 +547,7 @@ Component({
           // 队伍拥有者信息（从已预订记录中获取，这里假设currentJoinId关联的预订信息中包含）
           team_owner_ID: useduserId, // 需根据实际业务从预订记录中获取拥有者ID
           team_owner_name: usedtitle, // 需根据实际业务从预订记录中获取拥有者姓名
-          team_owner_Mobile: '00000', // 可选，拥有者手机号
+          team_owner_Mobile: teamChagndi, // 可选，拥有者手机号/！！这里需求变更吧电话号码改成场地信息
           
           // 申请者信息（当前操作用户）
           applicantName: teamName,
