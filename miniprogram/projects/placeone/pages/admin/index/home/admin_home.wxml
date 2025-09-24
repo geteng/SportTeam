@@ -46,8 +46,8 @@
 		<!-- <view class="item" bindtap="url" data-url="../../enroll/join_list/admin_enroll_join_list"> <text class="icon-list text-cyan"></text> <text class="text-black">历史订单</text>
 		</view>  -->
 
-		<!-- <view class="item" bindtap="url" data-url="../../enroll/scan/admin_enroll_scan"> <text class="icon-scan text-red text-bold"></text> <text class="text-black">扫码核销</text>
-		</view> -->
+		<view class="item" bindtap="url" data-url="../../enroll/scan/admin_enroll_scan"> <text class="icon-scan text-red text-bold"></text> <text class="text-black">扫码核销</text>
+		</view>
 
 
 		<!-- <view class="item" bindtap="url" data-url="../../enroll/flow/admin_enroll_flow"> <text class="icon-sort text-purple"></text> <text class="text-black">微信支付流水查询</text>

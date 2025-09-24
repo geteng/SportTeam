@@ -624,6 +624,14 @@ Component({
         teamMobileError: '' // 清空错误提示
       });
     },
+    url: function (e) {
+        // 获取传递的item完整数据
+      const item = e.currentTarget.dataset.item;
+      // 打印item的所有值
+      console.log('当前item的所有值：', item);
+      // 保留原有的页面跳转逻辑
+      pageHelper.url(e, this);
+    },
 
 	}
 })

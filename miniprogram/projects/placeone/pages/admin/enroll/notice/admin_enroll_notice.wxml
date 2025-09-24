@@ -6,15 +6,30 @@
 	<view class="admin-comm-list">
 		<view class="item" wx:for="{{list}}" wx:key="key" bindtap="url" data-url="../../setup/about/admin_setup_about?key=RULES{{item.val}}&title={{item.titleEn}}">
 			<view class="header">
-				<view class="left text-cut">《{{item.label}}》</view>
+				<view class="left text-cut"><text style="color: red;">一级入口</text>《{{item.label}}》</view>
 				<view class="right">
 					<view class="btn round margin-right-s"><text class="icon-edit margin-right-xxs"></text>编辑</view>
 
-					<view catchtap="url" data-url="../../../about/index/about_index?key=RULES{{item.id}}&title={{item.titleEn}}" class="btn round margin-right-s"><text class="icon-attention margin-right-xxs"></text>预览</view>
+					<!-- <view catchtap="url" data-url="../../../about/index/about_index?key=RULES{{item.id}}&title={{item.titleEn}}" class="btn round margin-right-s"><text class="icon-attention margin-right-xxs"></text>预览</view> -->
 				</view>
 			</view>
 		</view>
-		<view wx:if="{{list.length==0}}" class="line text-center">暂无可用场地，请先添加场地</view>
+		<view wx:if="{{list.length==0}}" class="line text-center">暂无可用一级场地，请先添加场地</view>
+
+	</view>
+  <view style="height: 20px;"></view>
+  <view class="admin-comm-list">
+		<view class="item" wx:for="{{list2}}" wx:key="key" bindtap="url" data-url="../../setup/about/admin_setup_about?key=RULES{{item._id}}&title={{item.titleEn}}">
+			<view class="header">
+				<view class="left text-cut"><text style="color: green;">二级入口</text>[{{item.ENROLL_CATE_NAME}}{{'-'}}{{item.ENROLL_TITLE}}]</view>
+				<view class="right">
+					<view class="btn round margin-right-s"><text class="icon-edit margin-right-xxs"></text>编辑</view>
+
+					<!-- <view catchtap="url" data-url="../../../about/index/about_index?key=RULES{{item.id}}&title={{item.titleEn}}" class="btn round margin-right-s"><text class="icon-attention margin-right-xxs"></text>预览</view> -->
+				</view>
+			</view>
+		</view>
+		<view wx:if="{{list2.length==0}}" class="line text-center">暂无可用二级场地，请先添加场地</view>
 
 	</view>
 	<!-- List END -->

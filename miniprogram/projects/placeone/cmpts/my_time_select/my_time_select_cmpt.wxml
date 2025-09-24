@@ -1,7 +1,7 @@
 <scroll-view scrollX scrollY showScrollbar="{{false}}" class="move-area" bounces="{{false}}" enhanced="{{true}}">
 	<view class="move-view">
 		<view class="table-title">
-			<view class="item" wx:for="{{columns}}" wx:key="k">{{item.label}}</view>
+			<view class="item" wx:for="{{columns}}" wx:key="k" bindtap="url" data-url="../../about/index/about_index?key=RULES{{item.enrollId}}&title={{item.label}}{{'预订须知'}}" data-item="{{item}}">{{item.label}}</view>
 		</view>
 		<view class="time-table">
 
