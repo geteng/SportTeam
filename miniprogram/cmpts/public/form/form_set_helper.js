@@ -31,7 +31,7 @@ function initFields(defaultFields = null) {
  
 			// 常规属性
 			if (!helper.isDefined(curForm['type'])) curForm['type'] = 'text';
-			if (!helper.isDefined(curForm['title'])) curForm['title'] = '姓名';
+			if (!helper.isDefined(curForm['title'])) curForm['title'] = '昵称';
 			if (!helper.isDefined(curForm['desc'])) curForm['desc'] = '';
 			if (!helper.isDefined(curForm['must'])) curForm['must'] = false;
 			if (!helper.isDefined(curForm['def'])) curForm['def'] = null; //默认值
@@ -101,8 +101,8 @@ function initFields(defaultFields = null) {
 		{
 			mark: mark(),
 			type: 'text',
-			title: '姓名',
-			desc: '您的姓名',
+			title: '昵称',
+			desc: '您的昵称',
 			must: true,
 			min: 0,
 			max: 30,

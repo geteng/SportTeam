@@ -1,5 +1,5 @@
 <block wx:if="{{isAdmin&&isLoad}}">
-	<cmpt-comm-list source='admin' type="admin-mgr" search="{{search||''}}" _menus="{{sortMenus}}" _items="{{sortItems}}" route="admin/mgr_list" sortMenusDefaultIndex="0" topBottom="50" placeholder="搜索账号,姓名,手机" bind:list="bindCommListCmpt">
+	<cmpt-comm-list source='admin' type="admin-mgr" search="{{search||''}}" _menus="{{sortMenus}}" _items="{{sortItems}}" route="admin/mgr_list" sortMenusDefaultIndex="0" topBottom="50" placeholder="搜索账号,昵称,手机" bind:list="bindCommListCmpt">
 
 		<view slot="searchEnd">
 			<button bindtap="url" data-url="../add/admin_mgr_add" class="btn radius bg-admin text-white  margin-right-s"><text class="icon-roundadd margin-right-xxs"></text>添加管理员</button>
@@ -30,7 +30,7 @@
 					</view>
 
 					<view class="info-item">
-						<view class="title">姓名</view>
+						<view class="title">昵称</view>
 						<view class="mao">：</view>
 						<view class="content">{{item.ADMIN_DESC||'未填写'}}</view>
 					</view>

@@ -37,7 +37,7 @@ module.exports = { // placeone
 
 	],
 	ENROLL_JOIN_FIELDS: [
-		{ mark: 'name', type: 'text', title: '姓名', must: true, min: 2, max: 30, edit: false },
+		{ mark: 'name', type: 'text', title: '昵称', must: true, min: 2, max: 30, edit: false },
 		{ mark: 'phone', type: 'text', len: 11, title: '手机号', must: true, edit: false },
 	],
 
