@@ -12,7 +12,9 @@ Page({
 	data: {
 		isLogin: true,
 		sortMenusDefaultIndex: -1,
-		cate: projectSetting.ENROLL_CATE
+    cate: projectSetting.ENROLL_CATE,
+    showPoster: false,
+    posterConfig: {},//这里存放分享信息 。可以参考其他页面搜这个关键字posterConfig
 	},
 
 	/**
@@ -81,7 +83,10 @@ Page({
 	 * 用户点击右上角分享
 	 */
 	onShareAppMessage: function () {
-
+		return {
+			title: '',//this.data.news.NEWS_TITLE,
+			imageUrl: '',//this.data.news.NEWS_PIC[0]
+		} 
 	},
 
 	url: async function (e) {
@@ -117,7 +122,14 @@ Page({
 			isLoad: true
 		});
 
-	},
+  },
+  bindShareTap: function () {
+    console.log('bindShareTap点击分享按钮:', "12312")
+    // 显示海报组件（用于生成分享海报）
+    this.setData({
+      showPoster: true
+    });
+  },
 	bindCancelTap: async function (e) {
 
 		if (!await PassportBiz.loginMustCancelWin(this)) return;

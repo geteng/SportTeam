@@ -5,7 +5,7 @@
 		<view wx:for="{{dataList.list}}" wx:key="key" class="item shadow item-simple" bindtap="url" data-url="{{}}">
 			<view class="simple">
 				<view class="simple-right">
-					<view class="simple-title content-cut-one">{{item.TEAM_OWNER_MOBILE}}{{":"}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}</view>
+					<view class="simple-title content-cut-one">{{item.TEAM_OWNER_MOBILE}}{{" : "}}{{item.TEAM_DATE}}{{"  "}}{{item.TEAM_HOUR}}</view>
 					<view class="simple-desc">
 						<text class="text-grey text-bold">{{item.TEAM_OWNER_NAME}}</text>
             <text class="margin-left-s">{{item.TEAM_EDIT_TIME}}</text>

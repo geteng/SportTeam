@@ -1,5 +1,6 @@
 {
-	"usingComponents": { 
+	"usingComponents": {
+		"cmpt-poster": "/cmpts/public/poster/poster_cmpt"
 	}, 
 	"disableScroll": true, 
 	"navigationBarTitleText": "我的预订"

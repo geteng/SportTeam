@@ -5,6 +5,8 @@
 		<view wx:for="{{dataList.list}}" wx:key="key" class="item shadow item-simple" bindtap="url" data-url="{{}}">
 			<view class="simple">
 				<view class="simple-right">
+          <view class="simple-title content-cut-one" >{{"申请人:"}}{{item.TEAM_APPLICANT_MOBILE}}
+          </view>
 					<view class="simple-title content-cut-one" >{{item.TEAM_APPLICANT_NAME}}
           </view>
 					<view class="simple-desc">

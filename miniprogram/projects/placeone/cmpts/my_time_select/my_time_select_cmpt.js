@@ -2,6 +2,8 @@ const dataHelper = require('../../../../helper/data_helper.js');
 const pageHelper = require('../../../../helper/page_helper.js');
 const timeHelper = require('../../../../helper/time_helper.js');
 const cloudHelper = require('../../../../helper/cloud_helper.js');
+const PassportBiz = require('../../../../comm/biz/passport_biz.js');
+
 Component({
 	options: {
 		addGlobalClass: true
@@ -94,8 +96,13 @@ Component({
     teamMobileError: '', // 申请组队手机号错误提示
     teamChagndi: '', //新增场地字段
     teamInInfo: '',
-    teamInInfoError: ''
+    teamInInfoError: '',
+    userUSER_NAME: ''
 	},
+
+
+
+
 
 	/**
 	 * 生命周期方法
@@ -123,6 +130,10 @@ Component({
       // let timeNode = this.data.columns[columnIdx].times[idx];
       console.log('timeNode内容:', timeNode); // 添加这行打印内容
       console.log('timeNode内容2:', timeNode.used); // 添加这行打印内容
+      let user_NAME = "";
+      if (PassportBiz.isLogin()) {
+        user_NAME = PassportBiz.getUserName();
+      }
 
       // 保存当前预订ID并显示申请组队窗口
       this.setData({ 
@@ -131,7 +142,8 @@ Component({
         teamName: '',
         teamMobile: '',
         teamChagndi: changdi,
-        teamMobileError: ''
+        teamMobileError: '',
+        userUSER_NAME:user_NAME
       });
     },
     
@@ -484,7 +496,7 @@ Component({
 
 		// 提交组队申请
 		submitTeamApply: async function() {
-			const { teamName, teamMobile ,day,used,teamChagndi} = this.data;
+			const { teamName, teamMobile ,day,used,teamChagndi,userUSER_NAME} = this.data;
       // const { teamName, teamMobile, currentJoinId, day, selectedStart, selectedEnd, nowUserId } = this.data;
  
 
@@ -551,7 +563,7 @@ Component({
           
           // 申请者信息（当前操作用户）
           applicantName: teamName,
-          applicantMobile: teamMobile,
+          applicantMobile: userUSER_NAME,//teamMobile这里又需求变更 改成 申请人昵称了
           
           // 组队时间地点（从组件数据中获取）
           date: day, // 日期

@@ -28,6 +28,7 @@ class TeamService extends BaseProjectService {
     let fields = `
     TEAM_ID,
     TEAM_OWNER_ID,
+    TEAM_OWNER_MOBILE,
     TEAM_APPLICANT_ID,
     TEAM_APPLICANT_NAME,
     TEAM_APPLICANT_MOBILE,
