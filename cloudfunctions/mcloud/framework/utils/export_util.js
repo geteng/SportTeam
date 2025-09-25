@@ -13,25 +13,25 @@ const config = require('../../config/config.js');
 const setupUtil = require('../utils/setup/setup_util.js');
 
 // 获得当前导出链接
+// 修改 getExportDataURL 方法，返回 total
 async function getExportDataURL(key) {
+  let url = '';
+  let time = '';
+  let total = 0; // 新增 total 变量
+  let expData = await setupUtil.get(key);
+  if (expData) {
+      url = expData.EXPORT_CLOUD_ID;
+      url = await cloudUtil.getTempFileURLOne(url) + '?rd=' + timeUtil.time();
+      time = timeUtil.timestamp2Time(expData.EXPORT_ADD_TIME);
+      total = expData.EXPORT_TOTAL || 0; // 从存储中获取 total
+  }
 
-	let url = '';
-	let time = '';
-	let expData = await setupUtil.get(key);
-	if (!expData)
-		url = '';
-	else {
-		url = expData.EXPORT_CLOUD_ID;
-		url = await cloudUtil.getTempFileURLOne(url) + '?rd=' + timeUtil.time();
-		time = timeUtil.timestamp2Time(expData.EXPORT_ADD_TIME);
-	}
-
-	return {
-		url,
-		time
-	}
+  return {
+      url,
+      time,
+      total // 新增：返回 total
+  };
 }
-
 // 删除数据文件
 async function deleteDataExcel(key) {
 	console.log('[deleteExcel]  BEGIN... , key=' + key)
@@ -72,50 +72,47 @@ async function deleteDataExcel(key) {
 }
 
 // 导出数据  
+// 在 export_util.js 中修改 exportDataExcel 方法，增加 total 存储
 async function exportDataExcel(key, title, total, data, options = {}) {
-	// 删除导出表
+  await setupUtil.remove(key); // 先删除旧记录
 
-	await setupUtil.remove(key);
+  let fileName = key + '_' + md5Lib.md5(key + config.CLOUD_ID);
+  let xlsPath = util.getProjectId() + '/' + 'export/' + fileName + '.xlsx';
 
-	let fileName = key + '_' + md5Lib.md5(key + config.CLOUD_ID);
-	let xlsPath = util.getProjectId() + '/' + 'export/' + fileName + '.xlsx';
+  const xlsx = require('node-xlsx');
+  let buffer = await xlsx.build([{
+      name: title + timeUtil.time('Y-M-D'),
+      data,
+      options
+  }]);
 
-	// 操作excel用的类库
-	const xlsx = require('node-xlsx');
+  const cloud = cloudBase.getCloud();
+  let upload = await cloud.uploadFile({
+      cloudPath: xlsPath,
+      fileContent: buffer,
+  });
+  if (!upload || !upload.fileID) return;
 
-	// 把数据保存到excel里
-	let buffer = await xlsx.build([{
-		name: title + timeUtil.time('Y-M-D'),
-		data,
-		options
-	}]);
+  // 存储时增加 EXPORT_TOTAL 字段
+  let dataExport = {
+      EXPORT_ADD_TIME: timeUtil.time(),
+      EXPORT_KEY: key,
+      EXPORT_CLOUD_ID: upload.fileID,
+      EXPORT_TOTAL: total // 新增：存储总条数
+  };
+  await setupUtil.set(key, dataExport, 'export');
 
-	// 把excel文件保存到云存储里
-	console.log('[ExportData]  Save to ' + xlsPath);
-	const cloud = cloudBase.getCloud();
-	let upload = await cloud.uploadFile({
-		cloudPath: xlsPath,
-		fileContent: buffer, //excel二进制文件
-	});
-	if (!upload || !upload.fileID) return;
+  console.log('[ExportData]  OVER.')
 
-	// 入导出表 
-	let dataExport = {
-		EXPORT_ADD_TIME: timeUtil.time(),
-		EXPORT_KEY: key,
-		EXPORT_CLOUD_ID: upload.fileID
-	}
-	//console.log(dataExport)
-	await setupUtil.set(key, dataExport, 'export');
-
-	console.log('[ExportData]  OVER.')
-
-	let url = await cloudUtil.getTempFileURLOne(upload.fileID) + '?rd=' + timeUtil.time();
-	return {
-		total,
-		url
-	}
+  let url = await cloudUtil.getTempFileURLOne(upload.fileID) + '?rd=' + timeUtil.time();
+  return {
+      total, // 返回 total
+      url
+  };
 }
+
+
+
 
 module.exports = {
 	getExportDataURL,

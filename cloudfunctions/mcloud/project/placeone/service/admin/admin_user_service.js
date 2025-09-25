@@ -154,95 +154,105 @@ class AdminUserService extends BaseProjectAdminService {
 		return await exportUtil.deleteDataExcel(EXPORT_USER_DATA_KEY);
 	}
 
+  // 假设该方法用于处理用户数据导出并返回结果（含总条数）
   /**导出用户数据 */
-  async exportUserDataExcel(condition, fields) {
-    // this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
-    try {
-        // 1. 解析查询条件
-        let where = {};
-        if (condition) {
-            where = JSON.parse(decodeURIComponent(condition));
-            // 确保关联当前项目
-            where.and = {
-                ...where.and,
-                _pid: this.getProjectId()
-            };
-        } else {
-            where = {
-                and: { _pid: this.getProjectId() }
-            };
-        }
+/** 导出用户数据 */
+async exportUserDataExcel(condition, fields) {
+  try {
+      // 1. 解析查询条件
+      let where = {};
+      if (condition) {
+          where = JSON.parse(decodeURIComponent(condition));
+          where.and = {
+              ...where.and,
+              _pid: this.getProjectId()
+          };
+      } else {
+          where = {
+              and: { _pid: this.getProjectId() }
+          };
+      }
 
-        // 2. 验证导出字段合法性
-        const validFields = Object.keys(UserModel.DB_STRUCTURE);
-        const exportFields = fields.filter(field => validFields.includes(field));
-        if (exportFields.length === 0) {
-            this.AppError('导出字段不能为空或不存在');
-        }
+      // 2. 验证导出字段合法性
+      const validFields = Object.keys(UserModel.DB_STRUCTURE);
+      const exportFields = fields.filter(field => validFields.includes(field));
+      if (exportFields.length === 0) {
+          this.AppError('导出字段不能为空或不存在');
+      }
 
-        // 3. 查询符合条件的用户数据
-        const userList = await UserModel.getAll(where, exportFields.join(','));
-        if (!userList || userList.length === 0) {
-            this.AppError('没有符合条件的数据可导出');
-        }
+      // 3. 获取符合条件的总记录数（关键：计算 total）
+      const total = await UserModel.count(where);
+      if (total === 0) {
+          this.AppError('没有符合条件的数据可导出');
+      }
 
-        // 4. 数据格式化处理
-        const exportData = userList.map(user => {
-            const item = {};
-            // 处理时间字段
-            if (exportFields.includes('USER_ADD_TIME')) {
-                item.USER_ADD_TIME = timeUtil.timestamp2Time(user.USER_ADD_TIME);
-            }
-            if (exportFields.includes('USER_REG_TIME')) {
-                item.USER_REG_TIME = timeUtil.timestamp2Time(user.USER_REG_TIME);
-            }
-            if (exportFields.includes('USER_LOGIN_TIME')) {
-                item.USER_LOGIN_TIME = user.USER_LOGIN_TIME 
-                    ? timeUtil.timestamp2Time(user.USER_LOGIN_TIME) 
-                    : '未登录';
-            }
-            // 处理状态字段
-            if (exportFields.includes('USER_STATUS')) {
-                item.USER_STATUS = UserModel.STATUS_DESC[
-                    Object.keys(UserModel.STATUS).find(
-                        key => UserModel.STATUS[key] === user.USER_STATUS
-                    )
-                ];
-            }
-            // 其他字段直接映射
-            exportFields.forEach(field => {
-                if (!item[field]) {
-                    item[field] = user[field] !== undefined ? user[field] : '';
-                }
-            });
-            return item;
-        });
+      // 4. 查询用户数据（如需分页可添加 limit，但导出通常全量）
+      const userList = await UserModel.getAll(where, exportFields.join(','));
 
-        // 5. 定义Excel表头映射
-        const headerMap = {
-            USER_NAME: '用户昵称',
-            USER_MOBILE: '手机号码',
-            USER_STATUS: '账号状态',
-            USER_ADD_TIME: '创建时间',
-            USER_REG_TIME: '注册时间',
-            USER_LOGIN_TIME: '最后登录时间',
-            USER_LOGIN_CNT: '登录次数',
-            USER_CHECK_REASON: '审核备注'
-        };
+      // 5. 数据格式化处理
+      const exportData = userList.map(user => {
+          const item = {};
+          // 处理时间字段
+          if (exportFields.includes('USER_ADD_TIME')) {
+              item.USER_ADD_TIME = timeUtil.timestamp2Time(user.USER_ADD_TIME);
+          }
+          if (exportFields.includes('USER_REG_TIME')) {
+              item.USER_REG_TIME = timeUtil.timestamp2Time(user.USER_REG_TIME);
+          }
+          if (exportFields.includes('USER_LOGIN_TIME')) {
+              item.USER_LOGIN_TIME = user.USER_LOGIN_TIME 
+                  ? timeUtil.timestamp2Time(user.USER_LOGIN_TIME) 
+                  : '未登录';
+          }
+          // 处理状态字段
+          if (exportFields.includes('USER_STATUS')) {
+              item.USER_STATUS = UserModel.STATUS_DESC[
+                  Object.keys(UserModel.STATUS).find(
+                      key => UserModel.STATUS[key] === user.USER_STATUS
+                  )
+              ];
+          }
+          // 其他字段直接映射
+          exportFields.forEach(field => {
+              if (!item[field]) {
+                  item[field] = user[field] !== undefined ? user[field] : '';
+              }
+          });
+          return Object.values(item); // 转为数组（xlsx 要求行数据为数组）
+      });
 
-        // 6. 生成导出文件
-        return await exportUtil.exportDataExcel({
-            key: EXPORT_USER_DATA_KEY,
-            data: exportData,
-            fields: exportFields,
-            headerMap: headerMap,
-            fileName: `用户数据_${timeUtil.time('Y-M-D')}`
-        });
-    } catch (err) {
-        if (err.message.includes('AppError')) throw err;
-        this.AppError('导出数据失败：' + err.message);
-    }
+      // 6. 生成表头（对应字段的中文名称）
+      const headerMap = {
+          USER_NAME: '用户昵称',
+          USER_MOBILE: '手机号码',
+          USER_STATUS: '账号状态',
+          USER_ADD_TIME: '创建时间',
+          USER_REG_TIME: '注册时间',
+          USER_LOGIN_TIME: '最后登录时间',
+          USER_LOGIN_CNT: '登录次数',
+          USER_CHECK_REASON: '审核备注'
+      };
+      const header = exportFields.map(field => headerMap[field] || field);
+      exportData.unshift(header); // 表头插入到数据第一行
+
+      // 7. 调用工具方法导出，传入 total
+      const result = await exportUtil.exportDataExcel(
+          EXPORT_USER_DATA_KEY, 
+          '用户数据', 
+          total, // 传入总条数
+          exportData
+      );
+
+      // 8. 返回包含 total 和 url 的结果
+      return {
+          total: result.total,
+          url: result.url
+      };
+  } catch (err) {
+      if (err.message.includes('AppError')) throw err;
+      this.AppError('导出数据失败：' + err.message);
   }
+}
 
 }
 
