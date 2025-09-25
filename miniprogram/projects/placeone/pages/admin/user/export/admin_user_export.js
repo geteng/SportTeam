@@ -42,6 +42,7 @@ Page({
 			title: 'bar'
 		}
 		let data = await cloudHelper.callCloudData('admin/user_data_get', params, options);
+    console.log("拉去数据的内容111",data);
 
 		if (!data) return;
 
@@ -117,7 +118,7 @@ Page({
 			}
 
 			await cloudHelper.callCloudData('admin/user_data_export', params, options).then(res => {
-
+        console.log("拉去数据的内容",res);
 				this._loadDetail(0);
 				pageHelper.showModal('数据文件生成成功(' + res.total + '条记录), 请点击「直接打开」按钮或者复制文件地址下载');
 

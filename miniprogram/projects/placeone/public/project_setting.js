@@ -9,8 +9,32 @@ module.exports = { // placeone
 	],
 
 	// 用户
-	USER_REG_CHECK: false,
+  USER_REG_CHECK: false,
+  // USER_FIELDS: [
+  //   'USER_ID',           // 用户唯一标识
+  //   'USER_MINI_OPENID',  // 小程序openid
+  //   'USER_NAME',         // 用户昵称
+  //   'USER_MOBILE',       // 联系电话
+  //   'USER_STATUS',       // 账号状态（0=待审核,1=正常,8=审核未过,9=禁用）
+  //   'USER_CHECK_REASON', // 审核未过理由
+  //   'USER_FORMS',        // 用户表单数据
+  //   'USER_OBJ',          // 用户扩展信息对象
+  //   'USER_LOGIN_CNT',    // 登录次数
+  //   'USER_LOGIN_TIME',   // 最近登录时间
+  //   'USER_ADD_TIME',     // 创建时间
+  //   'USER_EDIT_TIME'     // 最后编辑时间
+	// ],
 	USER_FIELDS: [
+    'USER_ID',           // 用户唯一标识
+    'USER_MINI_OPENID',  // 小程序openid
+    'USER_NAME',         // 用户昵称
+    'USER_MOBILE',       // 联系电话
+    'USER_STATUS',       // 账号状态（0=待审核,1=正常,8=审核未过,9=禁用）
+    'USER_CHECK_REASON', // 审核未过理由
+    'USER_LOGIN_CNT',    // 登录次数
+    'USER_LOGIN_TIME',   // 最近登录时间
+    'USER_ADD_TIME',     // 创建时间
+    'USER_EDIT_TIME'     // 最后编辑时间
 	],
 
 	NEWS_NAME: '最新通知',

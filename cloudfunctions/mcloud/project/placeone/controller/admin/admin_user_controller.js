@@ -149,7 +149,7 @@ class AdminUserController extends BaseProjectAdminController {
 		// 数据校验
 		let rules = {
 			condition: 'string|name=导出条件',
-			fields: 'array',
+			fields: 'array|min:1|name=导出字段',
 		};
 
 		// 取得数据
