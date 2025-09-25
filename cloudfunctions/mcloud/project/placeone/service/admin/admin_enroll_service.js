@@ -240,8 +240,8 @@ class AdminEnrollService extends BaseProjectAdminService {
     const userName = enrollJoin.ENROLL_JOIN_OBJ?.name || '未知用户';
     this.insertLog(
         `扫码核销了用户【${userName}】的预约：${enrollJoin.ENROLL_JOIN_ENROLL_TITLE}（${enrollJoin.ENROLL_JOIN_DAY} ${enrollJoin.ENROLL_JOIN_START}-${enrollJoin.ENROLL_JOIN_END_POINT}）`,
-        null,
-        LogModel.TYPE.OPER
+        null
+        // LogModel.TYPE.OPER
     );
 
     // 7. 返回核销结果

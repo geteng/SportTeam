@@ -69,7 +69,7 @@ Page({
 				await cloudHelper.callCloudSumbit('admin/enroll_join_scan', params, options).then(res => {
 					wx.showModal({
 						title: '温馨提示',
-						content: res.data,
+						content: '核销成功:'+ code,
 						confirmText: '继续核验',
 						cancelText: '查看详情',
 						success(res) {
