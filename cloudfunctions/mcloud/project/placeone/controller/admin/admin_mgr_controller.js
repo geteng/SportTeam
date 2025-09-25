@@ -59,7 +59,7 @@ class AdminMgrController extends BaseProjectAdminController {
 		let input = this.validateData(rules);
 
 		let service = new AdminMgrService();
-		await service.statusMgr(input.id, input.status, this._admin.ADMIN_PHONE);
+		await service.statusMgr(input.id, input.status, this._adminId);
 	}
 
 	/** 管理员列表 */

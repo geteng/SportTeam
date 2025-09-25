@@ -76,7 +76,7 @@ class AdminMgrService extends BaseProjectAdminService {
         '清除了系统所有操作日志',
         myAdmin,
         LogModel.TYPE.SYS,
-        { _pid: constants.PLATFORM_PID } // 存储到平台级日志，防止被项目日志清除影响
+        // { _pid: constants.PLATFORM_PID } // 存储到平台级日志，防止被项目日志清除影响
     );
 	}
 
@@ -289,7 +289,11 @@ class AdminMgrService extends BaseProjectAdminService {
 	async statusMgr(id, status, myAdminId) {
     // this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
     // 1. 验证当前操作的管理员是否为超级管理员
+    // console.log('myAdmin:', myAdminId)
+
     const myAdmin = await AdminModel.getOne({ _id: myAdminId }, 'ADMIN_TYPE');
+    console.log('myAdmin:', myAdmin)
+
     if (!myAdmin || myAdmin.ADMIN_TYPE !== 1) {
         this.AppError('仅超级管理员可修改管理员状态');
     }
