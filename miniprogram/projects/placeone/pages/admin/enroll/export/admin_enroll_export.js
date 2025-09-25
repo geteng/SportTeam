@@ -135,6 +135,8 @@ Page({
 				status: this.data.status
 			}
 
+      console.log("订单导出筛选",params);
+
 			await cloudHelper.callCloudData('admin/enroll_join_data_export', params, options).then(res => {
 				this._loadDetail(0);
 				pageHelper.showModal('数据文件生成成功(' + res.total + '条记录), 请点击「直接打开」按钮或者复制文件地址下载');

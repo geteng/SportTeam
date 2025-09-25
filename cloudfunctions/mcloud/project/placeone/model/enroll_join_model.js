@@ -69,12 +69,14 @@ EnrollJoinModel.DB_STRUCTURE = {
 EnrollJoinModel.FIELD_PREFIX = "ENROLL_JOIN_";
 
 /**
- * 状态  1=成功,9=用户取消, 99=审核未过 
+ * 状态  1=成功,9=用户取消, 99=审核未过 1=预订成功订单,9=用户取消订单,99=系统取消订单,998=已核销订单,999=所有订单
  */
 EnrollJoinModel.STATUS = {
 	SUCC: 1,
 	CANCEL: 9,
-	ADMIN_CANCEL: 99
+  ADMIN_CANCEL: 99,
+  END_O: 998,
+  ALL_O: 999
 };
 
 EnrollJoinModel.STATUS_DESC = {

@@ -850,17 +850,21 @@ class AdminEnrollService extends BaseProjectAdminService {
   }) {
         // this.AppError('[场地预订P]该功能暂不开放，如有需要请加作者微信：gttt999');
     // 1. 验证日期格式
-    // if (start && !timeUtil.isValidDate(start)) {
-    //   this.AppError('开始日期格式无效，应为YYYY-MM-DD');
-    // }
-    // if (end && !timeUtil.isValidDate(end)) {
-    //   this.AppError('结束日期格式无效，应为YYYY-MM-DD');
-    // }
+    // 日期格式校验（使用正则，与项目其他地方保持一致）
+    const dateReg = /^\d{4}-\d{2}-\d{2}$/; // 匹配 YYYY-MM-DD 格式
+    if (start && !dateReg.test(start)) {
+      this.AppError('开始日期格式错误，应为YYYY-MM-DD');
+    }
+    if (end && !dateReg.test(end)) {
+      this.AppError('结束日期格式错误，应为YYYY-MM-DD');
+    }
     if (start && end && start > end) {
       this.AppError('开始日期不能晚于结束日期');
     }
 
     // 2. 验证状态合法性
+    console.log("状态值无效，合法值为",status);
+    // status=1;
     if (status !== undefined) {
       const validStatus = Object.values(EnrollJoinModel.STATUS);
       if (!validStatus.includes(Number(status))) {
