@@ -879,8 +879,8 @@ class AdminEnrollService extends BaseProjectAdminService {
       }
     };
 
-    // 分类筛选
-    if (cateId) {
+    // 分类筛选（9999表示所有分类，不添加筛选条件）
+    if (cateId !== undefined &&  cateId !== 9999 && cateId !== "9999") { // 新增：排除9999的情况
       where.and.ENROLL_JOIN_CATE_ID = String(cateId);
     }
 
@@ -894,8 +894,8 @@ class AdminEnrollService extends BaseProjectAdminService {
         : ['<=', end];
     }
 
-    // 状态筛选
-    if (status !== undefined) {
+      // 状态筛选（999表示所有状态，不添加筛选条件）
+    if (status !== undefined && status !== 999 && status !== "999") { // 新增：排除999的情况
       where.and.ENROLL_JOIN_STATUS = Number(status);
     }
 
@@ -907,6 +907,7 @@ class AdminEnrollService extends BaseProjectAdminService {
       ENROLL_JOIN_IS_CHECKIN, ENROLL_JOIN_CHECKIN_TIME,
       ENROLL_JOIN_PAY_STATUS, ENROLL_JOIN_PAY_FEE, ENROLL_JOIN_ADD_TIME
     `;
+    console.log("符合条件的预订记录where",where);
 
     const enrollJoinList = await EnrollJoinModel.getAll(where, fields);
     if (!enrollJoinList || enrollJoinList.length === 0) {
