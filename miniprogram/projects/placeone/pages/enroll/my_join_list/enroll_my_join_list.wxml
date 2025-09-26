@@ -40,7 +40,7 @@
 					<text wx:elif="{{item.enroll.ENROLL_CANCEL_SET==3}}">结束前可取消，核销后不可取消</text>
 					<text wx:elif="{{item.enroll.ENROLL_CANCEL_SET==21}}">提前1天可取消</text>
 					<text wx:elif="{{item.enroll.ENROLL_CANCEL_SET==22}}">提前2天可取消</text>
-
+					<text wx:elif="{{item.enroll.ENROLL_CANCEL_SET==23}}">提前3天可取消</text>
 				</view>
 
 				<view class="data data-button">
